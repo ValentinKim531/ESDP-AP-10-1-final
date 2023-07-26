@@ -19,36 +19,41 @@
             <option value="none">Без ответа</option>
             <option selected value="all">Все</option>
         </select></p>
+        {% for privilege_str in request.user.role.privileges %}
+        {% if privilege_str == 'ALLOW_REQUEST_FROM_ALL_RESIDENT_READ' %}
         <p>Свои запросы</p>
         <p><select size="1" name="from_user">
             <option value="me">Да</option>
             <option selected value="all">Нет</option>
         </select></p>
+        {% endif %}
+        {% endfor %}
         <p><input type="submit" value="Отправить"></p>
     </form>
-    {% for request in requests %}
+    {% for request_info in requests %}
     <div class="request">
-        {% if request.sub_level %}
+        {% if request_info.sub_level %}
         <p>Запрос на подписку</p>
-        {% elif request.chat_request %}
+        {% elif request_info.chat_request %}
         <p>Запрос на создание чата</p>
         {% else %}
         <p>Запрос</p>
         {% endif %}
         <div class="request_user_sender">
-            <a href="{% url 'account_detail' request.user_sender.pk %}">
+            <a href="{% url 'account_detail' request_info.user_sender.pk %}">
                 {% if not request.user_sender.avatar %}
                 <img src="{% static 'svg/user.png' %}" alt="Avatar" class="sender_user_pic">
                 {% else %}
-                <img src="{{ request.user_sender.avatar.url }}" alt="" class="sender_user_pic">
+                <img src="{{ request_info.user_sender.avatar.url }}" alt="" class="sender_user_pic">
                 {% endif %}
-                {{ request.user_sender.first_name }} {{ request.user_sender.last_name }}
+                {{ request_info.user_sender.first_name }} {{ request_info.user_sender.last_name }}
             </a>
         </div>
-        <div class="request_text"><a href="{% url 'request_detail' request.pk %}">
-            <p>{{ request.request_text|truncatechars_html:60 }}</p>
+        <div class="request_text"><a href="{% url 'request_detail' request_info.pk %}">
+            <p>{{ request_info.request_text|truncatechars_html:60 }}</p>
         </a></div>
     </div>
     {% endfor %}
 </div>
+<p><a href="{% url 'request_create'  %}">Создание запроса</a></p>
 {% endblock %}

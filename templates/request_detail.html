@@ -4,51 +4,59 @@
 {% block content %}
 <div class="request_detail">
     <div class="request_detail_header">
-        {% if request.sub_level %}
+        {% if request_detail.sub_level %}
         <h1>Запрос на подписку</h1>
-        {% elif request.chat_request %}
+        {% elif request_detail.chat_request %}
         <h1>Запрос на создание чата</h1>
         {% else %}
         <h1>Запрос</h1>
         {% endif %}
     </div>
     <div class="request_detail_text">
-        <p>Оправитель: <a href="{% url 'account_detail' request.user_sender.pk %}">{{ request.user_sender.first_name }} {{ request.user_sender.last_name }}</a></p>
-        <p>Создан запрос: {{ request.created_at }}</p>
-        {% if request.user_reviewer %}
-        <p>Рецензент: <a href="{% url 'account_detail' request.user_reviewer.pk %}">{{ request.user_reviewer.first_name }} {{ request.user_reviewer.last_name }}</a></p>
+        <p>Оправитель: <a href="{% url 'account_detail' request_detail.user_sender.pk %}">{{ request_detail.user_sender.first_name }} {{ request_detail.user_sender.last_name }}</a></p>
+        <p>Создан запрос: {{ request_detail.created_at }}</p>
+        {% if request_detail.user_reviewer %}
+        <p>Рецензент: <a href="{% url 'account_detail' request_detail.user_reviewer.pk %}">{{ request_detail.user_reviewer.first_name }} {{ request_detail.user_reviewer.last_name }}</a></p>
         {% endif %}
-        {% if request.approved or request.approved == False %}
-            {% if request.approved == False %}
+        {% if request_detail.approved or request_detail.approved == False %}
+            {% if request_detail.approved == False %}
             <p>Запрос не одобрен</p>
-            {% elif request.approved == True %}
+            {% elif request_detail.approved == True %}
             <p>Запрос одобрен</p>
             {% endif %}
         <p>Закрыт запрос: {{ request.closed_at }}</p>
         {% endif %}
-        {% if request.request_text %}
-        <p>Текст запроса: {{ request.request_text }}</p>
+        {% if request_detail.request_text %}
+        <p>Текст запроса: {{ request_detail.request_text }}</p>
         {% endif %}
-        {% if request.response_text %}
-        <p>Текст ответа: {{ request.response_text }}</p>
+        {% if request_detail.response_text %}
+        <p>Текст ответа: {{ request_detail.response_text }}</p>
         {% endif %}
-        {% if request.sub_level %}
-        <p>Зарпос на подписку уровня "{{ request.sub_level.level_name }}"</p>
-        {% elif request.chat_request %}
-        <p>Зарпос на создание чата "{{ request.chat_request.chat_name }}"</p>
-            {% if request.chat_request.second_user %}
-            <p>Второй пользователь: <a href="{% url 'account_detail' request.chat_request.second_user.pk %}">{{ request.chat_request.second_user.first_name }} {{ request.chat_request.second_user.last_name }}</a></p>
+        {% if request_detail.sub_level %}
+        <p>Зарпос на подписку уровня "{{ request_detail.sub_level.level_name }}"</p>
+        {% elif request_detail.chat_request %}
+        <p>Зарпос на создание чата "{{ request_detail.chat_request.chat_name }}"</p>
+            {% if request_detail.chat_request.second_user %}
+            <p>Второй пользователь: <a href="{% url 'account_detail' request.chat_request.second_user.pk %}">{{ request_detail.chat_request.second_user.first_name }} {{ request_detail.chat_request.second_user.last_name }}</a></p>
             {% endif %}
-            {% if request.chat_request.cities %}
-            <p>Город чата {{ request.chat_request.cities }}</p>
+            {% if request_detail.chat_request.cities %}
+            <p>Город чата {{ request_detail.chat_request.cities }}</p>
             {% endif %}
-        <p>Описание чата: {{ request.chat_request.description }}</p>
-        <p>Правила чата: {{ request.chat_request.rules }}</p>
+        <p>Описание чата: {{ request_detail.chat_request.description }}</p>
+        <p>Правила чата: {{ request_detail.chat_request.rules }}</p>
         {% endif %}
     </div>
 </div>
-<p><a href="{% url 'request_update' request.pk %}">Обновить данные запроса</a></p>
-<p><a href="{% url 'request_delete' request.pk %}">Удалить запрос</a></p>
+{% for privilege_str in request.user.role.privileges %}
+{% if privilege_str == 'ALLOW_REQUEST_UPDATE' %}
+<p><a href="{% url 'request_update' request_detail.pk %}">Обновить данные запроса</a></p>
+{% endif %}
+{% if privilege_str == 'ALLOW_REQUEST_DELETE' %}
+<p><a href="{% url 'request_delete' request_detail.pk %}">Удалить запрос</a></p>
+{% endif %}
+{% if privilege_str == 'ALLOW_REQUEST_WRITE_RESPONSE' %}
+<p><a href="{% url 'request_response' request_detail.pk %}">Ответить на запрос</a></p>
+{% endif %}
+{% endfor %}
 <p><a href="{% url 'request_list' %}">Вернусься на страницу запросов админу</a></p>
-<p><a href="{% url 'request_response' request.pk %}">Ответить на запрос</a></p>
 {% endblock %}
