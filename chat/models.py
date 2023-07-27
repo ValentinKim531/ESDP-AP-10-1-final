@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 class ChatType(Enum):
     PRIVATE = "Private"
     GROUP = "Group"
+    CHANNEL = "Channel"
 
 
 class ChatRoom(models.Model):
@@ -32,6 +33,9 @@ class ChatRoom(models.Model):
     def is_group_chat(self):
         return self.chat_type == ChatType.GROUP.name
 
+    def is_channel(self):
+        return self.chat_type == ChatType.CHANNEL.name
+
     def get_user_list(self):
         return [user.username for user in self.users.all()]
 
@@ -42,6 +46,8 @@ class ChatRoomMembership(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
+        if self.chat_room.is_channel() and not self.user == self.chat_room.creator:
+            raise ValueError("Only the creator can add users to the channel.")
         super().save(*args, **kwargs)
         logger.debug(f"ChatRoomMembership created: User - {self.user.username}, Room - {self.chat_room.name}")
 

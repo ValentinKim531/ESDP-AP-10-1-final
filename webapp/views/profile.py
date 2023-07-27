@@ -1,11 +1,11 @@
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.http import urlencode
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import AuthenticationFailed
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 import json
 from accounts.models import Account, Role
 from accounts.cookie_auth import CookieJWTAuthentication
@@ -89,3 +89,14 @@ def json_accounts(request, *args, **kwargs):
             response = JsonResponse(response_data)
             response.status_code = 400
         return response
+
+
+class AccountUpdateView(UpdateView):
+    model = Account
+    template_name = 'profile_edit.html'
+    fields = ['first_name', 'last_name', 'cities', 'occupation', 'phone', 'hobby', 'facts_about_me',
+              'goal_for_the_year']
+    success_url = reverse_lazy('account_detail')
+
+    def get_success_url(self):
+        return reverse_lazy('account_detail', kwargs={'pk': self.object.pk})

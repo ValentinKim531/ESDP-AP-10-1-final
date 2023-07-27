@@ -1,7 +1,8 @@
 from django.urls import path
 from accounts.views.auth import RegisterUserView, LoginUserView, LogoutUserView
 from accounts.views.profile import ProfileView, ProfileListView
-from accounts.views.role import RoleListView, RoleDetailView, RoleCreateView, RoleUpdateView, RoleTransferView, RoleDeleteView
+from accounts.views.role import RoleListView, RoleDetailView, RoleCreateView, RoleUpdateView, RoleTransferView, \
+    RoleDeleteView
 
 urlpatterns = [
     path('profile-list/', ProfileListView.as_view(), name="profile_list"),

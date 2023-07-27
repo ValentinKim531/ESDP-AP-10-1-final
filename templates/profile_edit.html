@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %} Edit Profile{% endblock %}
+{% block content %}
+    <div class="container cont custom-container card">
+        <div class="row d-flex justify-content-center">
+            <div class="col-7 card text-bg-light form-margins custom-card">
+                <form method="post" enctype="multipart/form-data" class="custom-form">
+                    {% include 'partial/profile_edit_form.html' with button_text='Изменить' %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

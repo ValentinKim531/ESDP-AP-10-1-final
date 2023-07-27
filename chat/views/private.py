@@ -109,6 +109,15 @@ class ChatsView(View):
                 else:
                     chats_with_recipients.append({'chat': None, 'chat_name': chat_name,
                                                   'room_id': str(room.id), 'avatar_url': avatar_url})
+            elif room.is_channel():
+                chat_name = room.name
+                avatar_url = room.avatar.url if room.avatar else default_avatar_url
+                if chat:
+                    chats_with_recipients.append({'chat': chat, 'chat_name': chat_name,
+                                                  'room_id': str(room.id), 'avatar_url': avatar_url})
+                else:
+                    chats_with_recipients.append({'chat': None, 'chat_name': chat_name,
+                                                  'room_id': str(room.id), 'avatar_url': avatar_url})
             else:
                 if chat:
                     recipient = room.users.exclude(id=request.user.id).first()

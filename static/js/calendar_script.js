@@ -22,7 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         for (let j = 0; j < data.length; j++) {
                             const eventLink = document.createElement('a');
-                            eventLink.href = data[j].url;
+                            const calendarUrl = data[j].url;
+                            const eventUrl = calendarUrl.split('/calendar').join(''); // Remove "calendar" from the URL
+
+                            eventLink.href = eventUrl;
                             eventLink.className = 'event_card_mini_link';
 
                             const eventCard = document.createElement('div');

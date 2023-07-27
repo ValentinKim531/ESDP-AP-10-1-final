@@ -28,7 +28,7 @@
             </a>
         </div>
         <div class="navbar-center">
-            {% if room.is_group_chat %}
+            {% if room.is_group_chat or room.is_channel %}
             <a href="{% url 'group_detail' room.id %}">
                 {{ room.name }}
             </a>
@@ -45,7 +45,7 @@
             {% endif %}
         </div>
         <div class="navbar-right navbar-profile">
-            {% if room.is_group_chat %}
+            {% if room.is_group_chat or room.is_channel %}
             {% if room.avatar %}
             <img src="{{ room.avatar.url }}" alt="{{ room.name }}'s avatar" class="navbar-avatar">
             {% else %}
@@ -102,7 +102,7 @@
     {% endif %}
     {% endfor %}
 </ul>
-
+{% if not room.is_channel or user == room.creator %}
 <div class="chat-message">
     <label for="chat-file-input" class="chat-file-label">
         <i class="fas fa-paperclip"></i>
@@ -112,6 +112,8 @@
     <button id="emoji-button" class="emoji-button">🙂</button>
     <button id="send-button" class="send-button"><i class="fas fa-arrow-right"></i></button>
 </div>
+{% endif %}
+
 <emoji-picker id="emoji-picker" style="display: none;"></emoji-picker>
 {{ room_uuid|json_script:"room-id" }}
 

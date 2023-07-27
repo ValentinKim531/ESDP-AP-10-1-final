@@ -29,6 +29,15 @@
                 </div>
             </a>
         </div>
+        <div class="create_chat_div">
+            <a href="{% url 'start_channel' %}" class="user_card_link">
+                <div class="profile_card_button_wrapper">
+                        <span class="profile_card_button">
+                        Создать канал
+                        </span>
+                </div>
+            </a>
+        </div>
         {% if not chats_with_recipients %}
         <div class="user_card">
             <div class="no_profiles">
@@ -53,12 +62,12 @@
                     <div class="about_user_scope">
                         <h5 class="about_user_scope_heading">
                             {% if item.chat %}
-                            {{ item.chat.message|slice:":30" }}
-                            {% if item.chat.message|length > 30 %}
+                            {{ item.chat.message|slice:":20" }}
+                            {% if item.chat.message|length > 20 %}
                             ...
                             {% endif %}
                             {% else %}
-                            No messages yet...
+                            Нет сообщений...
                             {% endif %}
                         </h5>
                     </div>

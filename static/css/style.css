@@ -1204,6 +1204,7 @@ form > p {
     color: #007bff;
     text-decoration: none;
 }
+
 .new-resident-box a:hover {
     text-decoration: underline;
 }
@@ -1223,7 +1224,67 @@ form > p {
 }
 
 
+
 .role_select_width {
     font-size: 30px;
     margin-top: 10px;
+}
+
+
+.custom-container {
+    padding-top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.custom-card {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+
+.custom-form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+
+.custom-form input[type="text"],
+.custom-form textarea {
+    width: 400px;
+    height: 50px;
+    /*padding: 10px;*/
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    text-align: center;
+    font-size: 17px;
+}
+
+.custom-form select {
+    width: 200px;
+    height: 30px;
+}
+
+.custom-form div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.profile_card_button_wrapper log .but{
+    display: flex;
+    justify-content: center;
+}
+
+.col-7 card .custom-card{
+    width: 300px;
+    height: 800px;
 }

@@ -1,0 +1,9 @@
+{% load django_bootstrap5 %}
+{% csrf_token %}
+{% bootstrap_form form %}
+<div class="profile_card_button_wrapper log but">
+            <span class="profile_card_button">
+             <button type="submit" style=" background-color: transparent;border: none;color: #fff;cursor: pointer; padding-left: 50px"
+                     class="profile_card_button">{{ button_text }}</button>
+            </span>
+</div>

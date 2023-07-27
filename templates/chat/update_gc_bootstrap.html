@@ -1,0 +1,17 @@
+{% extends 'chat/base_chat.html' %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load static %}
+{% block title %}Редактировать группу{% endblock %}
+{% block content %}
+
+<h3 class="text-center">Редактировать группу</h3>
+
+{% include "chat/group_chat_form.html" with button_value="Обновить" %}
+
+{% endblock %}
+{% block script_block %}
+<script src="{% static 'js/groupChat.js' %}"></script>
+{% endblock %}

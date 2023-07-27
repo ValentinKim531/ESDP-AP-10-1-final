@@ -1,0 +1,22 @@
+{% load bootstrap5 %}
+<div class="container-fluid content-padding">
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        <div class="avatar-display">
+            {% if group_chat.avatar %}
+            <img src="{{ group_chat.avatar.url }}" alt="Group Chat Avatar" class="group-chat-avatar">
+            {% else %}
+            <img src="/uploads/groupchats/default.png" alt="Group Chat Avatar" class="group-chat-avatar">
+            {% endif %}
+            {% bootstrap_field form.avatar %}
+        </div>
+        {% bootstrap_field form.name %}
+        {% bootstrap_field form.description %}
+        {% bootstrap_field form.users %}
+        {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {{ button_value }}
+        </button>
+        {% endbuttons %}
+    </form>
+</div>

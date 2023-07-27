@@ -48,6 +48,9 @@ def publish(request):
         except ChatRoom.DoesNotExist:
             return JsonResponse({'error': 'Room does not exist'}, status=404)
 
+        if room.is_channel() and request.user != room.creator:
+            return JsonResponse({'error': 'Only the creator can send messages to this channel'}, status=403)
+
         if 'file' in request.FILES:
             uploaded_file = request.FILES['file']
             file_instance = File(file=uploaded_file, user=request.user, room=room)
