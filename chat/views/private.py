@@ -36,7 +36,7 @@ class RoomView(View):
 
         for i, current_message in enumerate(old_messages):
 
-            if i == 0:
+            if i == 0 and current_message.file_url:
                 _, ext = os.path.splitext(current_message.file_url)
                 content_type, _ = mimetypes.guess_type(current_message.file_url)
 
