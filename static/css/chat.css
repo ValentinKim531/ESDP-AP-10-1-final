@@ -137,6 +137,23 @@ audio {
     width: 250px;
 }
 
+.video-player {
+    width: 500px;
+    max-width: 100%;
+}
+
+@media (max-width: 600px) {
+    .video-player {
+        width: 100%;
+    }
+}
+
+@media (min-width: 601px) {
+    .video-player {
+        width: 500px;
+    }
+}
+
 /* Окно ввода сообщений */
 .chat-message {
     position: fixed;

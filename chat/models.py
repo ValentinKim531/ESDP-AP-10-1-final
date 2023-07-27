@@ -55,6 +55,7 @@ class ChatRoomMembership(models.Model):
 class File(models.Model):
     file = models.FileField(upload_to='chatfiles/')
     is_audio = models.BooleanField(default=False)
+    is_video = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='files')

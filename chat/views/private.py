@@ -52,6 +52,7 @@ class RoomView(View):
                 _, ext = os.path.splitext(current_message.file_url)
                 content_type, _ = mimetypes.guess_type(current_message.file_url)
                 current_message.is_image = content_type.startswith('image') if content_type else False
+                current_message.is_video = content_type.startswith('video') if content_type else False
                 current_message.content_type = content_type
             unique_messages.append(current_message)
 

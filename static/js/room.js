@@ -88,7 +88,18 @@ const sub = centrifuge.subscribe(channelName, function (ctx) {
             chatAudioPlayer.controls = true;
             chatAudioPlayer.src = ctx.data.fileUrl;
             chatMessageContent.appendChild(chatAudioPlayer);
-        } else {
+        } else if (ctx.data.isVideo || ctx.data.fileUrl.endsWith('.mp4') || ctx.data.fileUrl.endsWith('.webm') || ctx.data.fileUrl.endsWith('.ogg')) {
+            const videoPlayer = document.createElement('video');
+            videoPlayer.setAttribute('controls', '');
+            videoPlayer.setAttribute('preload', 'metadata');
+            videoPlayer.classList.add('video-player');
+            videoPlayer.addEventListener('loadedmetadata', function() {
+                chatThread.scrollTop = chatThread.scrollHeight;
+            });
+            chatMessageContent.appendChild(videoPlayer);
+            videoPlayer.src = ctx.data.fileUrl;
+            videoPlayer.load();
+        }  else {
             const chatFileLink = document.createElement('a');
             chatFileLink.href = ctx.data.fileUrl;
             chatFileLink.target = '_blank';

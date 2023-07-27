@@ -74,6 +74,11 @@
             {% if message.file_url %}
             {% if message.is_image %}
             <img src="{{ message.file_url }}" alt="{{ message.message }}" class="responsive-image">
+            {% elif message.is_video %}
+            <video controls class="video-player">
+                <source src="{{ message.file_url }}" type="{{ message.content_type }}">
+                Your browser does not support the video element.
+            </video>
             {% elif message.file_url|endswith:".mp3" or message.file_url|endswith:".wav" %}
             <audio controls>
                 <source src="{{ message.file_url }}" type="{{ message.content_type }}">
@@ -96,6 +101,11 @@
             {% if message.file_url %}
             {% if message.is_image %}
             <img src="{{ message.file_url }}" alt="{{ message.message }}" class="responsive-image">
+            {% elif message.is_video %}
+            <video controls class="video-player">
+                <source src="{{ message.file_url }}" type="{{ message.content_type }}">
+                Your browser does not support the video element.
+            </video>
             {% elif message.file_url|endswith:".mp3" or message.file_url|endswith:".wav" %}
             <audio controls>
                 <source src="{{ message.file_url }}" type="{{ message.content_type }}">
@@ -137,6 +147,7 @@ window.onload = function() {
     var chatThread = document.getElementById('chat-thread');
     chatThread.scrollTop = chatThread.scrollHeight;
 };
+
 </script>
 </body>
 
