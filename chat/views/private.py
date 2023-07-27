@@ -34,21 +34,26 @@ class RoomView(View):
         old_messages = list(ChatMessage.objects.filter(room=room).order_by('timestamp'))
         unique_messages = []
 
-        for i in range(len(old_messages)):
+        for i, current_message in enumerate(old_messages):
+
             if i == 0:
-                unique_messages.append(old_messages[i])
-            else:
-                last_unique_message = unique_messages[-1]
-                current_message = old_messages[i]
-                if (current_message.message == last_unique_message.message and
-                        current_message.timestamp - last_unique_message.timestamp <= timedelta(seconds=0.1)):
-                    if not current_message.file_url:
-                        continue
-                if current_message.file_url:
-                    _, ext = os.path.splitext(current_message.file_url)
-                    content_type, _ = mimetypes.guess_type(current_message.file_url)
-                    current_message.is_image = content_type.startswith('image') if content_type else False
-                unique_messages.append(current_message)
+                _, ext = os.path.splitext(current_message.file_url)
+                content_type, _ = mimetypes.guess_type(current_message.file_url)
+
+            last_unique_message = unique_messages[-1] if unique_messages else None
+
+            if last_unique_message and (current_message.message == last_unique_message.message and
+                                        current_message.timestamp - last_unique_message.timestamp <= timedelta(
+                        seconds=1)):
+                if not current_message.file_url:
+                    continue
+
+            if current_message.file_url:
+                _, ext = os.path.splitext(current_message.file_url)
+                content_type, _ = mimetypes.guess_type(current_message.file_url)
+                current_message.is_image = content_type.startswith('image') if content_type else False
+                current_message.content_type = content_type
+            unique_messages.append(current_message)
 
         files = File.objects.filter(room=room)
         return render(request, 'chat/room.html',

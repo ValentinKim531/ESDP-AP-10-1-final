@@ -133,6 +133,10 @@ body {
     word-break: break-all;
 }
 
+audio {
+    width: 250px;
+}
+
 /* Окно ввода сообщений */
 .chat-message {
     position: fixed;

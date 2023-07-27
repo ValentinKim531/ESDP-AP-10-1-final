@@ -26,6 +26,7 @@ function handleFileUpload(fileInput, centrifuge, roomId, userEmail, userFirstNam
             'fileUrl': data.file_url,
             'fileMessage': true,
             'isImage': data.is_image,
+            'isAudio': data.is_audio,
             'user': userEmail,
             'timestamp': new Date().toISOString(),
             'userFirstName': userFirstName,
