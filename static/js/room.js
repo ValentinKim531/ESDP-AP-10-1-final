@@ -1,4 +1,5 @@
 import { handleFileUpload } from './fileSharing.js';
+import { startRecording, stopRecording } from './voiceRecorder.js';
 
 const roomId = JSON.parse(document.getElementById('room-id').textContent);
 const chatThread = document.querySelector('#chat-thread');
@@ -6,8 +7,51 @@ const messageInput = document.querySelector('#chat-message-input');
 const picker = document.querySelector('#emoji-picker');
 const emojiButton = document.querySelector('#emoji-button');
 
+function initializeUI() {
+    if (messageInput.value.trim() !== "") {
+        voiceRecordingButton.style.display = "none";
+        document.getElementById("send-button").style.display = "flex";
+    } else {
+        voiceRecordingButton.style.display = "flex";
+        document.getElementById("send-button").style.display = "none";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializeUI);
+
+const voiceRecordingButton = document.createElement('button');
+voiceRecordingButton.innerHTML = "🎙️";
+voiceRecordingButton.id = "voice-recording-button";
+voiceRecordingButton.classList.add('chat-file-label');
+document.querySelector('.chat-message').appendChild(voiceRecordingButton);
+
+let isRecording = false;
+voiceRecordingButton.addEventListener('click', function() {
+    if (document.getElementById("send-button").style.display === "none") {
+        if (!isRecording) {
+            startRecording(centrifuge, roomId, userEmail, userFirstName, userLastName, userAvatarUrl);
+            voiceRecordingButton.innerHTML = "⬆️";
+            isRecording = true;
+        } else {
+            stopRecording();
+            voiceRecordingButton.innerHTML = "🎙️";
+            isRecording = false;
+        }
+    }
+});
+
 messageInput.addEventListener('click', function() {
     picker.style.display = 'none';
+});
+
+messageInput.addEventListener('input', function() {
+    if (messageInput.value.trim() !== "") {
+        voiceRecordingButton.style.display = "none";
+        document.getElementById("send-button").style.display = "flex";
+    } else {
+        voiceRecordingButton.style.display = "flex";
+        document.getElementById("send-button").style.display = "none";
+    }
 });
 
 function refreshPage() {
@@ -148,31 +192,12 @@ messageInput.onkeyup = function (e) {
         });
 
         messageInput.value = '';
+        voiceRecordingButton.style.display = "flex";
+        document.getElementById("send-button").style.display = "none";
         picker.style.display = 'none';
     }
 };
 
-const sendButton = document.querySelector('#send-button');
+const fileOrBlob = document.querySelector('#chat-file-input');
 
-sendButton.addEventListener('click', function() {
-    const message = messageInput.value;
-    if (!message) {
-        return;
-    }
-
-    sub.publish({
-        'message': message,
-        'user': userEmail,
-        'timestamp': new Date().toISOString(),
-        'userFirstName': userFirstName,
-        'userLastName': userLastName,
-        'avatarUrl': userAvatarUrl
-    });
-
-    messageInput.value = '';
-    picker.style.display = 'none';
-});
-
-const fileInput = document.querySelector('#chat-file-input');
-
-handleFileUpload(fileInput, centrifuge, roomId, userEmail, userFirstName, userLastName, userAvatarUrl);
+handleFileUpload(fileOrBlob, centrifuge, roomId, userEmail, userFirstName, userLastName, userAvatarUrl);
