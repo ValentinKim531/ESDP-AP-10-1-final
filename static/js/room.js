@@ -6,8 +6,19 @@ const chatThread = document.querySelector('#chat-thread');
 const messageInput = document.querySelector('#chat-message-input');
 const picker = document.querySelector('#emoji-picker');
 const emojiButton = document.querySelector('#emoji-button');
+const sendButton = document.getElementById("send-button");
 
 function initializeUI() {
+    if (messageInput.value.trim() !== "") {
+        voiceRecordingButton.style.display = "none";
+        document.getElementById("send-button").style.display = "flex";
+    } else {
+        voiceRecordingButton.style.display = "flex";
+        document.getElementById("send-button").style.display = "none";
+    }
+}
+
+function toggleSendOrVoiceButton() {
     if (messageInput.value.trim() !== "") {
         voiceRecordingButton.style.display = "none";
         document.getElementById("send-button").style.display = "flex";
@@ -73,6 +84,7 @@ emojiButton.addEventListener('click', () => {
 picker.addEventListener('emoji-click', event => {
     const messageInputDom = document.querySelector('#chat-message-input');
     messageInputDom.value += event.detail.emoji.unicode;
+    toggleSendOrVoiceButton();
 });
 
 const centrifuge = new Centrifuge("ws://" + window.location.host + "/connection/websocket");
@@ -192,11 +204,30 @@ messageInput.onkeyup = function (e) {
         });
 
         messageInput.value = '';
-        voiceRecordingButton.style.display = "flex";
-        document.getElementById("send-button").style.display = "none";
+        toggleSendOrVoiceButton();
         picker.style.display = 'none';
     }
 };
+
+sendButton.addEventListener('click', function() {
+    const message = messageInput.value;
+    if (!message.trim()) {
+        return;
+    }
+
+    sub.publish({
+        'message': message,
+        'user': userEmail,
+        'timestamp': new Date().toISOString(),
+        'userFirstName': userFirstName,
+        'userLastName': userLastName,
+        'avatarUrl': userAvatarUrl
+    });
+
+    messageInput.value = '';
+    toggleSendOrVoiceButton();
+    picker.style.display = 'none';
+});
 
 const fileOrBlob = document.querySelector('#chat-file-input');
 
