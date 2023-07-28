@@ -11,7 +11,7 @@ User = get_user_model()
 
 class ChatRoomModelTestCase(TestCase):
     def setUp(self):
-        self.user = Account.objects.create_user(username='testuser', password='testpass')
+        self.user = Account.objects.create_user(email='testuser1@test.com', password='testpass1', username='testuser1')
         self.room_private = ChatRoom.objects.create(name='Private Room', chat_type=ChatType.PRIVATE.name)
         self.room_group = ChatRoom.objects.create(name='Group Room', chat_type=ChatType.GROUP.name)
 
@@ -22,12 +22,22 @@ class ChatRoomModelTestCase(TestCase):
     def test_get_user_list(self):
         self.room_private.users.add(self.user)
         user_list = self.room_private.get_user_list()
-        self.assertEqual(user_list, ['testuser'])
+        self.assertEqual(user_list, ['testuser1'])
+
+    def test_is_channel(self):
+        room_channel = ChatRoom.objects.create(name='Channel Room', chat_type=ChatType.CHANNEL.name)
+        self.assertTrue(room_channel.is_channel())
+
+    def test_get_user_list_multiple_users(self):
+        user2 = Account.objects.create_user(email='testuser2@test.com', password='testpass2', username='testuser2')
+        self.room_private.users.add(self.user, user2)
+        user_list = self.room_private.get_user_list()
+        self.assertEqual(user_list, ['testuser1', 'testuser2'])
 
 
 class ChatRoomMembershipModelTestCase(TestCase):
     def setUp(self):
-        self.user = Account.objects.create_user(username='testuser', password='testpass')
+        self.user = Account.objects.create_user(email='testuser1@test.com', password='testpass1', username='testuser1')
         self.room = ChatRoom.objects.create(name='Test Room', chat_type=ChatType.PRIVATE.name)
 
     @patch('chat.models.logger.debug')
@@ -35,10 +45,16 @@ class ChatRoomMembershipModelTestCase(TestCase):
         ChatRoomMembership.objects.create(user=self.user, chat_room=self.room)
         mock_debug.assert_called_once()
 
+    def test_only_creator_can_add_to_channel(self):
+        room_channel = ChatRoom.objects.create(name='Channel Room', chat_type=ChatType.CHANNEL.name, creator=self.user)
+        user2 = Account.objects.create_user(email='testuser2@test.com', password='testpass2', username='testuser2')
+        with self.assertRaises(ValueError):
+            ChatRoomMembership.objects.create(user=user2, chat_room=room_channel)
+
 
 class ChatMessageModelTestCase(TestCase):
     def setUp(self):
-        self.user = Account.objects.create_user(username='testuser', password='testpass')
+        self.user = Account.objects.create_user(email='testuser@test.com', password='testpass', username='testuser')
         self.room = ChatRoom.objects.create(name='Test Room', chat_type=ChatType.PRIVATE.name)
         self.message = ChatMessage.objects.create(user=self.user, room=self.room, message='Hello, World!')
 
@@ -46,10 +62,20 @@ class ChatMessageModelTestCase(TestCase):
         format_timestamp = self.message.timestamp.strftime("%Y-%m-%d %H:%M:%S")
         self.assertEqual(self.message.display_timestamp(), format_timestamp)
 
+    def test_chat_message_file_url(self):
+        chat_message = ChatMessage.objects.create(user=self.user, room=self.room, message="Hello with a URL!",
+                                                  file_url="https://example.com/file.mp3")
+        self.assertEqual(chat_message.file_url, "https://example.com/file.mp3")
+
+    def test_chat_message_content_type(self):
+        chat_message = ChatMessage.objects.create(user=self.user, room=self.room, message="Hello with content type!",
+                                                  content_type="audio/mp3")
+        self.assertEqual(chat_message.content_type, "audio/mp3")
+
 
 class FileModelTestCase(TestCase):
     def setUp(self):
-        self.user = Account.objects.create_user(email='testuser@test.com', password='testpass2', username='testuser')
+        self.user = Account.objects.create_user(email='testuser@test.com', password='testpass', username='testuser')
         self.room = ChatRoom.objects.create(name='Test Room 2', chat_type=ChatType.PRIVATE.name)
 
         dummy_file = SimpleUploadedFile("file.txt", b"file_content", content_type="text/plain")
@@ -71,3 +97,9 @@ class FileModelTestCase(TestCase):
         chat_message = ChatMessage.objects.create(user=self.user, room=self.room, message="Hello with a file!")
         chat_message.related_files.add(self.file_instance)
         self.assertIn(self.file_instance, chat_message.related_files.all())
+
+    def test_is_audio_default(self):
+        self.assertFalse(self.file_instance.is_audio)
+
+    def test_is_video_default(self):
+        self.assertFalse(self.file_instance.is_video)
