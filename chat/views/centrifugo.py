@@ -3,9 +3,8 @@ import uuid
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import logging
-
+import mimetypes
 from django.views.decorators.http import require_POST
-
 from chat.models import ChatRoom, File, ChatMessage
 
 logger = logging.getLogger(__name__)
@@ -53,7 +52,11 @@ def publish(request):
 
         if 'file' in request.FILES:
             uploaded_file = request.FILES['file']
-            file_instance = File(file=uploaded_file, user=request.user, room=room)
+            content_type, _ = mimetypes.guess_type(uploaded_file.name)
+            is_audio = content_type.startswith('audio') if content_type else False
+            is_video = content_type.startswith('video') if content_type else False
+
+            file_instance = File(file=uploaded_file, user=request.user, room=room, is_audio=is_audio, is_video=is_video)
             file_instance.save()
         else:
             file_instance = None

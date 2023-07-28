@@ -54,6 +54,8 @@ class ChatRoomMembership(models.Model):
 
 class File(models.Model):
     file = models.FileField(upload_to='chatfiles/')
+    is_audio = models.BooleanField(default=False)
+    is_video = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='files')
@@ -71,6 +73,7 @@ class ChatMessage(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
     file = models.ForeignKey(File, on_delete=models.SET_NULL, null=True, blank=True)
     file_url = models.URLField(null=True, blank=True)
+    content_type = models.CharField(max_length=100, null=True, blank=True)
 
     def display_timestamp(self):
         return self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
