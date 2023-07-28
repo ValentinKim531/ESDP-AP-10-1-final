@@ -1,83 +1,88 @@
 {% extends 'base.html' %}
 {% block title %}Request Create{% endblock %}
 {% block content %}
-<div class="container cont" style="padding-top: 100px;">
+    <div class="about_current_page">
+        <h1 class="newsline_header">СОЗДАНИЕ ЗАПРОСА</h1>
+    </div>
+    <div class="container cont"">
     <div class="row d-flex justify-content-center">
-        <div class="col-7 card text-bg-light form-margins">
-            <h2>Создание запроса</h2>
+        <div class="col-7 card text-bg-light form-margins request_form_custom">
+            <p class="request_header">Выберите тип запроса</p>
             <select id="request_select" name="request_select">
                 <option value="request">Запрос</option>
                 <option value="sub_request">Запрос на продление подписки</option>
                 <option value="chat_request">Запрос на создание чата</option>
             </select>
-            <div id="id_form"></div>
+            <div id="id_form" class="request_form_div"></div>
         </div>
+        <p class="request_back_p"><a href="{% url 'request_list' %}" class="request_back_link">Вернуться на страницу запросов админа</a></p>
     </div>
-</div>
-<p><a href="{% url 'request_list' %}">Вернусься на страницу запросов админу</a></p>
+    </div>
 {% endblock %}
 {% block script_block %}
-<script>
-    if ("{{ type_form }}" == 'def_request') {
-        const requestFormForm = document.createElement('form');
-        requestFormForm.id = 'form_request'
-        requestFormForm.method = 'post';
-        requestFormForm.innerHTML = `{% include 'partial/request_form.html' %}`
-        const requestButton = document.createElement('input');
-        requestButton.type = "submit";
-        requestButton.class = "btn btn-success";
-        requestButton.value = "Создать";
-        requestFormForm.append(requestButton);
-        const divForm = document.getElementById("id_form");
-        divForm.append(requestFormForm);
-    } else if ("{{ type_form }}" == 'sub_request') {
-        const requestFormForm = document.createElement('form');
-        requestFormForm.id = 'form_request'
-        requestFormForm.method = 'post';
-        requestFormForm.innerHTML = `{% include 'partial/sub_request_form.html' %}`
-        const requestButton = document.createElement('input');
-        requestButton.type = "submit";
-        requestButton.class = "btn btn-success";
-        requestButton.value = "Создать";
-        requestFormForm.append(requestButton);
-        const divForm = document.getElementById("id_form");
-        divForm.append(requestFormForm);
-    } else if ("{{ type_form }}" == 'chat_request') {
-        const requestFormForm = document.createElement('form');
-        requestFormForm.id = 'form_request'
-        requestFormForm.method = 'post';
-        requestFormForm.innerHTML = `{% include 'partial/chat_request_form.html' %} {% include 'partial/request_form.html' %}`
-        const requestButton = document.createElement('input');
-        requestButton.type = "submit";
-        requestButton.class = "btn btn-success";
-        requestButton.value = "Создать";
-        requestFormForm.append(requestButton);
-        const divForm = document.getElementById("id_form");
-        divForm.append(requestFormForm);
-    };
-    const requestSelect = document.getElementById("request_select");
-    requestSelect.onchange = function() {
-        const divForSelect = document.getElementById("id_form");
-        const requestFormFormSelect = document.getElementById('form_request');
-        const targetValue = requestSelect.value;
-        divForSelect.removeChild(requestFormFormSelect);
-        const requestFormForm = document.createElement('form');
-        requestFormForm.id = 'form_request'
-        requestFormForm.method = 'post'
-        if (targetValue === 'chat_request') {
-            requestFormForm.innerHTML = `{% include 'partial/chat_request_form.html' %} {% include 'partial/request_form.html' %}`
-        } else if (targetValue === 'sub_request') {
-            requestFormForm.innerHTML = `{% include 'partial/sub_request_form.html' %}`
-        } else if (targetValue === 'request') {
+    <script>
+        if ("{{ type_form }}" == 'def_request') {
+            const requestFormForm = document.createElement('form');
+            requestFormForm.id = 'form_request'
+            requestFormForm.method = 'post';
             requestFormForm.innerHTML = `{% include 'partial/request_form.html' %}`
+            const requestButton = document.createElement('input');
+            requestButton.type = "submit";
+            requestButton.class = "btn btn-success";
+            requestButton.value = "Создать";
+            requestFormForm.append(requestButton);
+            const divForm = document.getElementById("id_form");
+            divForm.append(requestFormForm);
+        } else if ("{{ type_form }}" == 'sub_request') {
+            const requestFormForm = document.createElement('form');
+            requestFormForm.id = 'form_request'
+            requestFormForm.method = 'post';
+            requestFormForm.innerHTML = `{% include 'partial/sub_request_form.html' %}`
+            const requestButton = document.createElement('input');
+            requestButton.type = "submit";
+            requestButton.class = "btn btn-success";
+            requestButton.value = "Создать";
+            requestFormForm.append(requestButton);
+            const divForm = document.getElementById("id_form");
+            divForm.append(requestFormForm);
+        } else if ("{{ type_form }}" == 'chat_request') {
+            const requestFormForm = document.createElement('form');
+            requestFormForm.id = 'form_request'
+            requestFormForm.method = 'post';
+            requestFormForm.innerHTML = `{% include 'partial/chat_request_form.html' %} {% include 'partial/request_form.html' %}`
+            const requestButton = document.createElement('input');
+            requestButton.type = "submit";
+            requestButton.class = "btn btn-success";
+            requestButton.value = "Создать";
+            requestFormForm.append(requestButton);
+            const divForm = document.getElementById("id_form");
+            divForm.append(requestFormForm);
+        }
+        ;
+        const requestSelect = document.getElementById("request_select");
+        requestSelect.onchange = function () {
+            const divForSelect = document.getElementById("id_form");
+            const requestFormFormSelect = document.getElementById('form_request');
+            const targetValue = requestSelect.value;
+            divForSelect.removeChild(requestFormFormSelect);
+            const requestFormForm = document.createElement('form');
+            requestFormForm.id = 'form_request'
+            requestFormForm.method = 'post'
+            if (targetValue === 'chat_request') {
+                requestFormForm.innerHTML = `{% include 'partial/chat_request_form.html' %} {% include 'partial/request_form.html' %}`
+            } else if (targetValue === 'sub_request') {
+                requestFormForm.innerHTML = `{% include 'partial/sub_request_form.html' %}`
+            } else if (targetValue === 'request') {
+                requestFormForm.innerHTML = `{% include 'partial/request_form.html' %}`
+            }
+            ;
+            const requestButton = document.createElement('input');
+            requestButton.type = "submit";
+            requestButton.class = "btn btn-success";
+            requestButton.value = "Создать";
+            requestFormForm.append(requestButton);
+            const divForm = document.getElementById("id_form");
+            divForm.append(requestFormForm);
         };
-        const requestButton = document.createElement('input');
-        requestButton.type = "submit";
-        requestButton.class = "btn btn-success";
-        requestButton.value = "Создать";
-        requestFormForm.append(requestButton);
-        const divForm = document.getElementById("id_form");
-        divForm.append(requestFormForm);
-    };
-</script>
+    </script>
 {% endblock %}
