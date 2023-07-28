@@ -2,103 +2,113 @@
 {% load static %}
 {% block title %}Event Detail{% endblock %}
 {% block content %}
-<div class="about_current_page">
-    <h1 class="newsline_header">{{ event.type_events|upper }}</h1>
-</div>
-<div class="profile_card_wrapper">
-    <div class="profile_card">
-        <div class="event_div">
-            <div class="eve_name">
-                <h3 class="event_detail_card_header">{{ event.name }}</h3>
-            </div>
-        </div>
-        <div class="photo_event">
-            <img style="height: 360px; width: 600px; "
-                 src="{{ event.photo.image.url }}" alt="Event Photo" class="event_detail_card_pic">
-        </div>
-        <div class="profile_card_info_div">
-            <div class="profile_names">
-                <div class="event_div">
-                    <p style="font-style: italic;font-weight: 400;font-size: 32px;line-height: 44px;color: #000000;">
-                        <b>Описание мероприятия:</b>{{ event.description }}</p>
+    <div class="about_current_page">
+        <h1 class="newsline_header">{{ event.type_events|upper }}</h1>
+    </div>
+    <div class="profile_card_wrapper">
+        <div class="profile_card">
+            <div class="event_div">
+                <div class="eve_name">
+                    <h3 class="event_detail_card_header">{{ event.name }}</h3>
                 </div>
             </div>
-            <div class="availible">
-                <p style="font-style: normal;font-weight: 500;font-size: 40px;line-height: 54px;text-align: center;">
-                    {{ available_seats }}
-                    свободно из {{ event.number_of_seats }}</p>
+            <div class="photo_event">
+                <img style="height: 360px; width: 600px; "
+                     src="{{ event.photo.image.url }}" alt="Event Photo" class="event_detail_card_pic">
             </div>
-            {% if user_payment %}
-            <p>Вы уже оплатили</p>
-            {% else %}
-            {% if data %}
-            {% if available_seats != 0 %}
-            {% if not booked %}
-            <a href="{% url 'events_booked' event.pk %}" class="thank_profile_link">
-                <div class="profile_card_button_wrapper">
+            <div class="profile_card_info_div">
+                <div class="profile_names">
+                    <div class="event_div">
+                        <p style="font-style: italic;font-weight: 400;font-size: 32px;line-height: 44px;color: #000000;text-transform: capitalize;">
+                            <b>Город проведения меропрития:</b>{{ event.cities }}</p>
+                        <p style="font-style: italic;font-weight: 400;font-size: 32px;line-height: 44px;color: #000000;text-transform: capitalize;">
+                            <b>Тип меропрития:</b>{{ event.type_events }}</p>
+                        <p style="font-style: italic;font-weight: 400;font-size: 32px;line-height: 44px;color: #000000;">
+                            <b>Описание мероприятия:</b>{{ event.description }}</p>
+                        <p style="font-style: italic;font-weight: 400;font-size: 32px;line-height: 44px;color: #000000;">
+                            <b>Место проведения:</b>{{ event.place }}</p>
+                        <p style="font-style: italic;font-weight: 400;font-size: 32px;line-height: 44px;color: #000000;">
+                            <b>Дата:</b><span xml:lang="ru">{{ event.end_register_at }}</span>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="availible">
+                    <p style="font-style: normal;font-weight: 500;font-size: 40px;line-height: 54px;text-align: center;">
+                        {{ available_seats }}
+                        свободно из {{ event.number_of_seats }}</p>
+                </div>
+                {% if user_payment %}
+                    <p>Вы уже оплатили</p>
+                {% else %}
+                    {% if data %}
+                        {% if available_seats != 0 %}
+                            {% if not booked %}
+                                <a href="{% url 'events_booked' event.pk %}" class="thank_profile_link">
+                                    <div class="profile_card_button_wrapper">
                     <span class="profile_card_button">
                         Зарегистрироваться
                     </span>
-                </div>
-            </a>
-            {% endif %}
-            {% endif %}
-            {% if booked %}
-            <a href="{% url 'events_booked_delete' event.pk %}" class="thank_profile_link">
-                <div class="profile_card_button_wrapper">
+                                    </div>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                        {% if booked %}
+                            <a href="{% url 'events_booked_delete' event.pk %}" class="thank_profile_link">
+                                <div class="profile_card_button_wrapper">
                     <span class="profile_card_button">
                         Отмена
                     </span>
-                </div>
-            </a>
-            {% endif %}
-            {% endif %}
-            {% endif %}
-        </div>
-    </div>
-</div>
-<div class="events_booked_list">
-    {% for booked_resident in resident_booked %}
-    <div class="user_booked_card">
-        <a href="{% url 'account_detail' booked_resident.resident.pk %}" class="user_card_link">
-            <div class="about_user">
-                <div class="about_user_name">
-                    <h4 class="about_user_name_heading">{{ booked_resident.resident.first_name }} {{ booked_resident.resident.last_name }}</h4>
-                    <h4 class="about_user_name_heading">{{ booked_resident.resident.cities }}</h4>
-                </div>
-            </div>
-            <div class="user_pic_div">
-                {% if not booked_resident.resident.avatar %}
-                <img src="{% static 'svg/user.png' %}" alt="Avatar" class="user_pic">
-                {% else %}
-                <img src="{{ booked_resident.resident.avatar.image.url }}" alt="" class="user_pic">
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
             </div>
-        </a>
+        </div>
     </div>
-    <div class="resident_booking_link">
-        {% if not booked_resident.date_of_payment %}
-        <a href="{% url 'event_resident_booking' booked_resident.pk %}" class="thank_profile_link">
-            <div class="profile_card_button_wrapper">
+    <div class="events_booked_list">
+        {% for booked_resident in resident_booked %}
+            <div class="user_booked_card">
+                <a href="{% url 'account_detail' booked_resident.resident.pk %}" class="user_card_link">
+                    <div class="about_user">
+                        <div class="about_user_name">
+                            <h4 class="about_user_name_heading">{{ booked_resident.resident.first_name }} {{ booked_resident.resident.last_name }}</h4>
+                            <h4 class="about_user_name_heading">{{ booked_resident.resident.cities }}</h4>
+                        </div>
+                    </div>
+                    <div class="user_pic_div">
+                        {% if not booked_resident.resident.avatar %}
+                            <img src="{% static 'svg/user.png' %}" alt="Avatar" class="user_pic">
+                        {% else %}
+                            <img src="{{ booked_resident.resident.avatar.image.url }}" alt="" class="user_pic">
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+            <div class="resident_booking_link">
+                {% if not booked_resident.date_of_payment %}
+                    <a href="{% url 'event_resident_booking' booked_resident.pk %}" class="thank_profile_link">
+                        <div class="profile_card_button_wrapper">
                             <span class="profile_card_button">
                                 Закрепить место
                             </span>
-            </div>
-        </a>
-        {% else %}
-        <div class="profile_card_button_wrapper">
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="profile_card_button_wrapper">
                             <span class="profile_card_button">
                                 Место оплачено
                             </span>
-        </div>
-        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="user_booked_card">
+                <div class="no_profiles">
+                    <h5 class="no_profiles_text">No accounts found</h5>
+                </div>
+            </div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <div class="user_booked_card">
-        <div class="no_profiles">
-            <h5 class="no_profiles_text">No accounts found</h5>
-        </div>
-    </div>
-    {% endfor %}
-</div>
 {% endblock %}

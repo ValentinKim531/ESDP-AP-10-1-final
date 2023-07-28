@@ -1,15 +1,16 @@
 from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.http import urlencode
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import AuthenticationFailed
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 import json
 from accounts.models import Account
 from accounts.cookie_auth import CookieJWTAuthentication
 from webapp.forms import SearchForm
+
 
 class ProfileListView(ListView):
     model = Account
@@ -30,7 +31,6 @@ class ProfileListView(ListView):
             else:
                 return HttpResponseRedirect(reverse('login'))
         return super().dispatch(request, *args, **kwargs)
-
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_search_form()
@@ -60,8 +60,6 @@ class ProfileListView(ListView):
         return context
 
 
-
-
 class ProfileDetailView(DetailView):
     model = Account
     template_name = 'profile_detail.html'
@@ -71,8 +69,10 @@ class ProfileDetailView(DetailView):
 def json_accounts(request, *args, **kwargs):
     if request.method == 'GET':
         search = request.GET.get('search')
-        accounts = Account.objects.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search)) if search else Account.objects.all()
-        return JsonResponse(list(accounts.values(*('id', 'occupation', 'first_name', 'last_name', 'avatar__image'))), safe=False)
+        accounts = Account.objects.filter(
+            Q(first_name__icontains=search) | Q(last_name__icontains=search)) if search else Account.objects.all()
+        return JsonResponse(list(accounts.values(*('id', 'occupation', 'first_name', 'last_name', 'avatar__image'))),
+                            safe=False)
     if request.method == 'POST' and request.body:
         account = json.loads(request.body)
         try:
@@ -85,3 +85,13 @@ def json_accounts(request, *args, **kwargs):
             response.status_code = 400
         return response
 
+
+class AccountUpdateView(UpdateView):
+    model = Account
+    template_name = 'profile_edit.html'
+    fields = ['first_name', 'last_name', 'cities', 'occupation', 'phone', 'hobby', 'facts_about_me',
+              'goal_for_the_year']
+    success_url = reverse_lazy('account_detail')
+
+    def get_success_url(self):
+        return reverse_lazy('account_detail', kwargs={'pk': self.object.pk})

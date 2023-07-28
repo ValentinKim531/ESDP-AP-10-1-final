@@ -37,7 +37,7 @@
             </div>
             <div class="profile_card_button_div">
                 {% if account.pk == request.user.pk %}
-                    <a href="#" class="update_profile_link">
+                    <a href="{% url 'account_update' account.pk %}" class="update_profile_link">
                         <div class="profile_card_button_wrapper">
                             <span class="profile_card_button">
                                 Редактировать
