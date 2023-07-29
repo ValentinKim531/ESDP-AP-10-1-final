@@ -1,0 +1,39 @@
+name: "titany deploy workflow"
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-job:
+    runs-on: ubuntu-latest
+    env:
+      DB_NAME: ${{ vars.POSTGRES_DB }}
+      DB_USER: ${{ vars.POSTGRES_USER }}
+      DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+
+    steps:
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'any_host'
+
+      - name: Clone repo and create environment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /root/titany/ESDP-AP-10-1
+            git pull origin master
+            docker-compose down --remove-orphans
+            docker-compose build
+            docker-compose up -d
+            exit
+
+
