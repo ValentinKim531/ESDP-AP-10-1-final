@@ -9,22 +9,16 @@ const emojiButton = document.querySelector('#emoji-button');
 const sendButton = document.getElementById("send-button");
 
 function initializeUI() {
-    if (messageInput.value.trim() !== "") {
-        voiceRecordingButton.style.display = "none";
-        document.getElementById("send-button").style.display = "flex";
-    } else {
-        voiceRecordingButton.style.display = "flex";
-        document.getElementById("send-button").style.display = "none";
-    }
+    toggleSendOrVoiceButton();
 }
 
 function toggleSendOrVoiceButton() {
     if (messageInput.value.trim() !== "") {
         voiceRecordingButton.style.display = "none";
-        document.getElementById("send-button").style.display = "flex";
+        sendButton.style.display = "flex";
     } else {
         voiceRecordingButton.style.display = "flex";
-        document.getElementById("send-button").style.display = "none";
+        sendButton.style.display = "none";
     }
 }
 
@@ -38,7 +32,7 @@ document.querySelector('.chat-message').appendChild(voiceRecordingButton);
 
 let isRecording = false;
 voiceRecordingButton.addEventListener('click', function() {
-    if (document.getElementById("send-button").style.display === "none") {
+    if (sendButton.style.display === "none") {
         if (!isRecording) {
             startRecording(centrifuge, roomId, userEmail, userFirstName, userLastName, userAvatarUrl);
             voiceRecordingButton.innerHTML = "⬆️";
@@ -55,15 +49,7 @@ messageInput.addEventListener('click', function() {
     picker.style.display = 'none';
 });
 
-messageInput.addEventListener('input', function() {
-    if (messageInput.value.trim() !== "") {
-        voiceRecordingButton.style.display = "none";
-        document.getElementById("send-button").style.display = "flex";
-    } else {
-        voiceRecordingButton.style.display = "flex";
-        document.getElementById("send-button").style.display = "none";
-    }
-});
+messageInput.addEventListener('input', toggleSendOrVoiceButton);
 
 function refreshPage() {
     location.reload(true);
@@ -101,6 +87,7 @@ let userEmail = document.getElementById('user-email') ? document.getElementById(
 let userAvatarUrl = document.getElementById('user-avatar-url') ? document.getElementById('user-avatar-url').value : '';
 
 const channelName = 'rooms:' + roomId;
+
 const sub = centrifuge.subscribe(channelName, function (ctx) {
     const chatNewThread = document.createElement('li');
     const chatMessageBody = document.createElement('div');
@@ -186,6 +173,7 @@ const sub = centrifuge.subscribe(channelName, function (ctx) {
 centrifuge.connect();
 
 messageInput.focus();
+
 messageInput.onkeyup = function (e) {
     if (e.keyCode === 13) {
         e.preventDefault();
@@ -230,5 +218,4 @@ sendButton.addEventListener('click', function() {
 });
 
 const fileOrBlob = document.querySelector('#chat-file-input');
-
 handleFileUpload(fileOrBlob, centrifuge, roomId, userEmail, userFirstName, userLastName, userAvatarUrl);
