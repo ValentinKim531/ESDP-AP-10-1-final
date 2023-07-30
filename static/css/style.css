@@ -1408,6 +1408,12 @@ form > p {
     align-items: center;
 }
 
+.vote_create_form input[type=text] {
+    height: 44px;
+    width: 800px;
+    font-size: 34px;
+}
+
 .vote_create_form label {
     color: white;
     font-size: 54px;
@@ -1422,6 +1428,35 @@ form > p {
 
 .vote_create_form button {
     width: 240px;
+    height: 50px;
+    font-size: 34px;
+}
+
+.vote_create_form select {
+    width: 800px;
+    height: 48px;
+    font-size: 34px;
+}
+
+.vote_create_form select > option {
+    font-size: 18px;
+}
+
+.add_vote_option_button {
+    width: 480px !important;
+    height: 82px !important;
+    font-size: 36px !important;
+}
+
+.finish_adding_vote_option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.finish_adding_vote_option_button {
+    width: 200px;
     height: 50px;
     font-size: 34px;
 }
