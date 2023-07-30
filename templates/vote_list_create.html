@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}Create news{% endblock %}
 {% block content %}
- <form method="post" style="padding-top: 100px">
-  {% csrf_token %}
-
-    {{ form }}
-  <button type="submit" class="btn btn-info right"> Submit </button>
-
-</form>
+    <form method="post" style="padding-top: 100px">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" class="btn btn-info right"> Submit</button>
+    </form>
 {% endblock %}

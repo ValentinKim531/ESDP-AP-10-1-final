@@ -1304,7 +1304,6 @@ form > p {
 
 
 .custom-container {
-    padding-top: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1312,7 +1311,7 @@ form > p {
 
 
 .custom-card {
-    height: 1610px;
+    height: 1580px;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -1369,4 +1368,60 @@ form > p {
 .col-7 card .custom-card {
     width: 300px;
     height: 800px;
+}
+
+.requests_list_form {
+    height: 1200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.requests_list_header {
+    font-size: 48px;
+    color: white;
+}
+
+.requests_list_select {
+    width: 800px;
+    height: 48px;
+    font-size: 34px;
+}
+
+.requests_list_select > option {
+    font-size: 14px;
+}
+
+.requests_list_confirm {
+    width: 240px;
+    height: 50px;
+    font-size: 34px;
+}
+
+.vote_create_form {
+    height: 1200px;
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.vote_create_form label {
+    color: white;
+    font-size: 54px;
+}
+
+.vote_create_form textarea {
+    width: 600px;
+    height: 300px;
+    font-size: 34px;
+    text-align: center;
+}
+
+.vote_create_form button {
+    width: 240px;
+    height: 50px;
+    font-size: 34px;
 }
