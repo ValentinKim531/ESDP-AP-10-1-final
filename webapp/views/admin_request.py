@@ -7,12 +7,10 @@ from django.shortcuts import redirect
 from webapp.forms import ChatRequestForm, SubscriptionLevelForm, AdminRequestSenderTextForm, AdminRequestSubLevelForm, \
     AdminRequestReviewerForm
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
-from django.http import Http404, HttpResponse, HttpResponseForbidden
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class AdminRequestListView(ListView):
+class AdminRequestListView(LoginRequiredMixin, ListView):
     model = AdminRequest
     template_name = 'request_list.html'
     context_object_name = 'requests'
@@ -50,7 +48,7 @@ class AdminRequestListView(ListView):
         return context
 
 
-class AdminRequestDetailView(UserPassesTestMixin, DetailView):
+class AdminRequestDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = AdminRequest
     template_name = 'request_detail.html'
     context_object_name = 'request_detail'
