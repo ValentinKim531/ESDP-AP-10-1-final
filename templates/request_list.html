@@ -2,58 +2,65 @@
 {% load static %}
 {% block title %}Request List{% endblock %}
 {% block content %}
-<div class="request_list">
-    <h1>Запросы</h1>
-    <form action="{% url 'request_list' %}" method="get">
-        <p>Выберите список запросов</p>
-        <p><select size="1" name="filter">
-            <option value="chat_request">Запросы на создание чата</option>
-            <option value="sub_level">Запросы на продление подписки</option>
-            <option value="other_request">Остальные запросы</option>
-            <option selected value="all_request">Все запросы</option>
-        </select></p>
-        <p>Утвержденые?</p>
-        <p><select size="1" name="approved">
-            <option value="true">Да</option>
-            <option value="false">Нет</option>
-            <option value="none">Без ответа</option>
-            <option selected value="all">Все</option>
-        </select></p>
-        {% for privilege_str in request.user.role.privileges %}
-        {% if privilege_str == 'ALLOW_REQUEST_FROM_ALL_RESIDENT_READ' %}
-        <p>Свои запросы</p>
-        <p><select size="1" name="from_user">
-            <option value="me">Да</option>
-            <option selected value="all">Нет</option>
-        </select></p>
-        {% endif %}
-        {% endfor %}
-        <p><input type="submit" value="Отправить"></p>
-    </form>
-    {% for request_info in requests %}
-    <div class="request">
-        {% if request_info.sub_level %}
-        <p>Запрос на подписку</p>
-        {% elif request_info.chat_request %}
-        <p>Запрос на создание чата</p>
-        {% else %}
-        <p>Запрос</p>
-        {% endif %}
-        <div class="request_user_sender">
-            <a href="{% url 'account_detail' request_info.user_sender.pk %}">
-                {% if not request.user_sender.avatar %}
-                <img src="{% static 'svg/user.png' %}" alt="Avatar" class="sender_user_pic">
-                {% else %}
-                <img src="{{ request_info.user_sender.avatar.url }}" alt="" class="sender_user_pic">
-                {% endif %}
-                {{ request_info.user_sender.first_name }} {{ request_info.user_sender.last_name }}
-            </a>
+    <div class="request_list">
+        <div class="about_current_page">
+            <h1 class="newsline_header">ЗАПРОСЫ</h1>
         </div>
-        <div class="request_text"><a href="{% url 'request_detail' request_info.pk %}">
-            <p>{{ request_info.request_text|truncatechars_html:60 }}</p>
-        </a></div>
+        <form action="{% url 'request_list' %}" method="get" class="requests_list_form">
+            <div class="choose_request_div">
+                <p class="requests_list_header">Выберите список запросов</p>
+                <p><select size="1" name="filter" class="requests_list_select">
+                    <option value="chat_request">Запросы на создание чата</option>
+                    <option value="sub_level">Запросы на продление подписки</option>
+                    <option value="other_request">Остальные запросы</option>
+                    <option selected value="all_request">Все запросы</option>
+                </select></p>
+            </div>
+            <div class="confirmed_requests">
+                <p class="requests_list_header">Утвержденые?</p>
+                <p><select size="1" name="approved" class="requests_list_select">
+                    <option value="true">Да</option>
+                    <option value="false">Нет</option>
+                    <option value="none">Без ответа</option>
+                    <option selected value="all">Все</option>
+                </select></p>
+            </div>
+            {% for privilege_str in request.user.role.privileges %}
+            {% if privilege_str == 'ALLOW_REQUEST_FROM_ALL_RESIDENT_READ' %}
+            <div class="own_requests">
+                <p class="requests_list_header">Свои запросы</p>
+                <p><select size="1" name="from_user" class="requests_list_select">
+                    <option value="me">Да</option>
+                    <option selected value="all">Нет</option>
+                </select></p>
+            </div>
+            {% endif %}
+            {% endfor %}
+            <p><input type="submit" value="Отправить" class="requests_list_confirm"></p>
+        </form>
+        {% for request in requests %}
+            <div class="request">
+                {% if request.sub_level %}
+                    <p>Запрос на подписку</p>
+                {% elif request.chat_request %}
+                    <p>Запрос на создание чата</p>
+                {% else %}
+                    <p>Запрос</p>
+                {% endif %}
+                <div class="request_user_sender">
+                    <a href="{% url 'account_detail' request.user_sender.pk %}">
+                        {% if not request.user_sender.avatar %}
+                            <img src="{% static 'svg/user.png' %}" alt="Avatar" class="sender_user_pic">
+                        {% else %}
+                            <img src="{{ request.user_sender.avatar.url }}" alt="" class="sender_user_pic">
+                        {% endif %}
+                        {{ request.user_sender.first_name }} {{ request.user_sender.last_name }}
+                    </a>
+                </div>
+                <div class="request_text"><a href="{% url 'request_detail' request.pk %}">
+                    <p>{{ request.request_text|truncatechars_html:60 }}</p>
+                </a></div>
+            </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-<p><a href="{% url 'request_create'  %}">Создание запроса</a></p>
 {% endblock %}

@@ -1,6 +1,8 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import CreateView, ListView, DetailView, TemplateView
 from django.urls import reverse
+
+from accounts.models import Account
 from webapp.forms import VoteForm, VotingOptionsForm, ListVoteForm
 from webapp.models import ListVotes, Vote, VotingOptions, UsersWhoVoted
 
@@ -62,9 +64,20 @@ class VoteDetailView(DetailView):
         vote_list = self.object
         for i in vote_list.vote.all():
             option = VotingOptions.objects.filter(vote=i.pk)
+            all_user_who_voted = 0
+            for j in option:
+                all_user_who_voted += UsersWhoVoted.objects.filter(possible_answer=j).count()
+            if all_user_who_voted == 0:
+                for j in option:
+                    j.procent = 0
+            else:
+                for j in option:
+                    voted_user = UsersWhoVoted.objects.filter(possible_answer=j).count()
+                    j.procent = int((voted_user / all_user_who_voted) * 100)
+            context['vot'] = i.question_to_vote
             context['votes'] = option
-        voted_user = UsersWhoVoted.objects.filter(users=self.request.user).last()
-        context['voted_user'] = voted_user
+        voted_users = UsersWhoVoted.objects.filter(users=self.request.user).last()
+        context['voted_user'] = voted_users
         return context
 
 

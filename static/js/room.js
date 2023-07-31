@@ -1,14 +1,55 @@
 import { handleFileUpload } from './fileSharing.js';
+import { startRecording, stopRecording } from './voiceRecorder.js';
 
 const roomId = JSON.parse(document.getElementById('room-id').textContent);
 const chatThread = document.querySelector('#chat-thread');
 const messageInput = document.querySelector('#chat-message-input');
 const picker = document.querySelector('#emoji-picker');
 const emojiButton = document.querySelector('#emoji-button');
+const sendButton = document.getElementById("send-button");
+
+function initializeUI() {
+    toggleSendOrVoiceButton();
+}
+
+function toggleSendOrVoiceButton() {
+    if (messageInput.value.trim() !== "") {
+        voiceRecordingButton.style.display = "none";
+        sendButton.style.display = "flex";
+    } else {
+        voiceRecordingButton.style.display = "flex";
+        sendButton.style.display = "none";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializeUI);
+
+const voiceRecordingButton = document.createElement('button');
+voiceRecordingButton.innerHTML = "🎙️";
+voiceRecordingButton.id = "voice-recording-button";
+voiceRecordingButton.classList.add('chat-file-label');
+document.querySelector('.chat-message').appendChild(voiceRecordingButton);
+
+let isRecording = false;
+voiceRecordingButton.addEventListener('click', function() {
+    if (sendButton.style.display === "none") {
+        if (!isRecording) {
+            startRecording(centrifuge, roomId, userEmail, userFirstName, userLastName, userAvatarUrl);
+            voiceRecordingButton.innerHTML = "⬆️";
+            isRecording = true;
+        } else {
+            stopRecording();
+            voiceRecordingButton.innerHTML = "🎙️";
+            isRecording = false;
+        }
+    }
+});
 
 messageInput.addEventListener('click', function() {
     picker.style.display = 'none';
 });
+
+messageInput.addEventListener('input', toggleSendOrVoiceButton);
 
 function refreshPage() {
     location.reload(true);
@@ -29,6 +70,7 @@ emojiButton.addEventListener('click', () => {
 picker.addEventListener('emoji-click', event => {
     const messageInputDom = document.querySelector('#chat-message-input');
     messageInputDom.value += event.detail.emoji.unicode;
+    toggleSendOrVoiceButton();
 });
 
 const centrifuge = new Centrifuge("ws://" + window.location.host + "/connection/websocket");
@@ -45,6 +87,7 @@ let userEmail = document.getElementById('user-email') ? document.getElementById(
 let userAvatarUrl = document.getElementById('user-avatar-url') ? document.getElementById('user-avatar-url').value : '';
 
 const channelName = 'rooms:' + roomId;
+
 const sub = centrifuge.subscribe(channelName, function (ctx) {
     const chatNewThread = document.createElement('li');
     const chatMessageBody = document.createElement('div');
@@ -75,7 +118,31 @@ const sub = centrifuge.subscribe(channelName, function (ctx) {
                 chatThread.scrollTop = chatThread.scrollHeight;
             };
             chatMessageContent.appendChild(chatImage);
-        } else {
+        } else if (ctx.data.isAudio) {
+            const audioPlayer = document.createElement('audio');
+            audioPlayer.setAttribute('controls', '');
+            const audioSource = document.createElement('source');
+            audioSource.src = ctx.data.fileUrl;
+            audioSource.type = 'audio/mpeg';
+            audioPlayer.appendChild(audioSource);
+            chatMessageContent.appendChild(audioPlayer);
+        } else if (ctx.data.fileUrl.endsWith('.mp3') || ctx.data.fileUrl.endsWith('.wav')) {
+            const chatAudioPlayer = document.createElement('audio');
+            chatAudioPlayer.controls = true;
+            chatAudioPlayer.src = ctx.data.fileUrl;
+            chatMessageContent.appendChild(chatAudioPlayer);
+        } else if (ctx.data.isVideo || ctx.data.fileUrl.endsWith('.mp4') || ctx.data.fileUrl.endsWith('.webm') || ctx.data.fileUrl.endsWith('.ogg')) {
+            const videoPlayer = document.createElement('video');
+            videoPlayer.setAttribute('controls', '');
+            videoPlayer.setAttribute('preload', 'metadata');
+            videoPlayer.classList.add('video-player');
+            videoPlayer.addEventListener('loadedmetadata', function() {
+                chatThread.scrollTop = chatThread.scrollHeight;
+            });
+            chatMessageContent.appendChild(videoPlayer);
+            videoPlayer.src = ctx.data.fileUrl;
+            videoPlayer.load();
+        }  else {
             const chatFileLink = document.createElement('a');
             chatFileLink.href = ctx.data.fileUrl;
             chatFileLink.target = '_blank';
@@ -106,6 +173,7 @@ const sub = centrifuge.subscribe(channelName, function (ctx) {
 centrifuge.connect();
 
 messageInput.focus();
+
 messageInput.onkeyup = function (e) {
     if (e.keyCode === 13) {
         e.preventDefault();
@@ -124,15 +192,14 @@ messageInput.onkeyup = function (e) {
         });
 
         messageInput.value = '';
+        toggleSendOrVoiceButton();
         picker.style.display = 'none';
     }
 };
 
-const sendButton = document.querySelector('#send-button');
-
 sendButton.addEventListener('click', function() {
     const message = messageInput.value;
-    if (!message) {
+    if (!message.trim()) {
         return;
     }
 
@@ -146,9 +213,9 @@ sendButton.addEventListener('click', function() {
     });
 
     messageInput.value = '';
+    toggleSendOrVoiceButton();
     picker.style.display = 'none';
 });
 
-const fileInput = document.querySelector('#chat-file-input');
-
-handleFileUpload(fileInput, centrifuge, roomId, userEmail, userFirstName, userLastName, userAvatarUrl);
+const fileOrBlob = document.querySelector('#chat-file-input');
+handleFileUpload(fileOrBlob, centrifuge, roomId, userEmail, userFirstName, userLastName, userAvatarUrl);

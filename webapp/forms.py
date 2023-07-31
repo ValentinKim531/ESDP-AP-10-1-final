@@ -134,7 +134,7 @@ class AdminRequestReviewerForm(forms.ModelForm):
 
 
 class SearchForm(forms.Form):
-    search = forms.CharField(max_length=20, required=False, label="Найти")
+    search = forms.CharField(max_length=20, required=False, label="Поиск резидентов")
 
 
 class ListVoteForm(forms.ModelForm):

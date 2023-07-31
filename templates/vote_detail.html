@@ -11,9 +11,8 @@
             <div class="event_card">
                 <div class="event_card_description">
                     <div class="event_card_description_div">
-                        <h6 class="event_card_description">{{ vote.name_of_the_vote }}</h6>
-                         <h6 class="event_card_description">Время открытия закрытия - {{ vote.expiration_at }}</h6>
-                         <h6 class="event_card_description">Кто создал голосование - {{ vote.user_who_created_list_votes }}</h6>
+                        <h6 class="event_card_description">{{ vot }}</h6>
+                        <h6 class="event_card_description">Время закрытия - {{ vote.expiration_at }}</h6>
                     </div>
                 </div>
             </div>
@@ -22,20 +21,22 @@
     </div>
 </div>
 <h1 class="newsline_header">Варианты ответа</h1>
-{% for vot in votes %}
-{% if voted_user.possible_answer != vot  %}
-<a href="{% url 'vote_user_options' vot.pk %}">
+<div>
+    {% for vot in votes %}
+    {% if voted_user.possible_answer != vot %}
+    <a href="{% url 'vote_user_options' vot.pk %}">
 
+        <div class="calendar_new_event_button">
+            <h1 class="btn btn-info calendar_button_custom">{{ vot.option }} {{ vot.procent }}%</h1>
+        </div>
+    </a>
+    {% endif %}
+    {% if voted_user.possible_answer == vot %}
     <div class="calendar_new_event_button">
-        <h3 class="btn btn-info calendar_button_custom" >{{ vot.option }}</h3>
+        <h1 class="btn btn-info calendar_button_custom" style="background-color: brown;">{{ vot.option }} Выбран {{ vot.procent }}%</h1>
     </div>
-</a>
-{% endif %}
-{% if voted_user.possible_answer == vot  %}
-    <div class="calendar_new_event_button">
-        <h3 class="btn btn-info calendar_button_custom" style="background-color: brown;" >{{ vot.option }} Выбран</h3>
-    </div>
-{% endif %}
- {% endfor %}
+    {% endif %}
+    {% endfor %}
+</div>
 {% endblock %}
 

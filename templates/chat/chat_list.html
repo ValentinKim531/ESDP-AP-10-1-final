@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% load chat_filters %}
 {% load static %}
 {% load humanize %}
-
+{% block title %}Chat List{% endblock %}
 
 {% block navbar %}
 <nav class="navbar navbar-light bg-light sticky-top">
@@ -62,14 +63,28 @@
                     <div class="about_user_scope">
                         <h5 class="about_user_scope_heading">
                             {% if item.chat %}
-                            {{ item.chat.message|slice:":20" }}
+                            {% if item.chat.message|endswith:".mp4" or item.chat.message|endswith:".ogg" %}
+                                📹 {{ item.chat.message|slice:":20" }}
+                            {% elif item.chat.message|startswith:"voiceMessage" %}
+                                🎤 {{ item.chat.message|slice:":20" }}
+                            {% elif item.chat.message|endswith:".mp3" or item.chat.message|endswith:".wav" %}
+                                🎵 {{ item.chat.message|slice:":20" }}
+                            {% elif item.chat.message|endswith:".jpeg" or item.chat.message|endswith:".png" or item.chat.message|endswith:".bmp" or item.chat.message|endswith:".gif" %}
+                                🖼 {{ item.chat.message|slice:":20" }}
+                            {% elif item.chat.message|endswith:".pdf" or item.chat.message|endswith:".docx" or item.chat.message|endswith:".txt" or item.chat.message|endswith:".xlsx" %}
+                                📎 {{ item.chat.message|slice:":20" }}
+                            {% else %}
+                                {{ item.chat.message|slice:":20" }}
+                            {% endif %}
+
                             {% if item.chat.message|length > 20 %}
-                            ...
+                                ...
                             {% endif %}
                             {% else %}
-                            Нет сообщений...
+                                Нет сообщений...
                             {% endif %}
                         </h5>
+
                     </div>
                     <div class="chat_timestamp">
                         {% if item.chat %}
