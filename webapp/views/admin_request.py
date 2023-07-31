@@ -157,7 +157,7 @@ class AdminRequestUpdateView(UpdateView):
                 'form_text': AdminRequestSenderTextForm(request_data.__dict__),
                 'type_form': 'def_request'
             }
-        context['request'] = request_data
+        context['request_detail'] = request_data
         return context
 
     def post(self, request, *args, **kwargs):
@@ -232,7 +232,7 @@ class AdminResponseView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = {
-            'request': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
+            'request_detail': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
             'form': AdminRequestReviewerForm
         }
         return context
@@ -255,12 +255,12 @@ class AdminResponseView(UpdateView):
                 request_response.save()
                 return redirect(reverse('request_detail', kwargs={'pk': request_response.pk}))
             context = {
-                'request': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
+                'request_detail': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
                 'form': form
             }
             return self.render_to_response(context=context)
         context = {
-            'request': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
+            'request_detail': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
             'form': AdminRequestReviewerForm
         }
         return self.render_to_response(context=context)

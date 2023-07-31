@@ -37,7 +37,7 @@
         {% elif request_detail.chat_request %}
         <p>Зарпос на создание чата "{{ request_detail.chat_request.chat_name }}"</p>
             {% if request_detail.chat_request.second_user %}
-            <p>Второй пользователь: {{ request_detail.chat_request.second_user.first_name }} {{ request_detail.chat_request.second_user.last_name }}</p>
+            <p>Второй пользователь: <a href="{% url 'account_detail' request_detail.chat_request.second_user.pk %}">{{ request_detail.chat_request.second_user.first_name }} {{ request_detail.chat_request.second_user.last_name }}</a></p>
             {% endif %}
             {% if request_detail.chat_request.cities %}
             <p>Город чата {{ request_detail.chat_request.cities }}</p>
