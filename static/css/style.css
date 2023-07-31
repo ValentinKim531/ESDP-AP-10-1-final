@@ -171,7 +171,8 @@ ul {
 }
 
 .form-label {
-    font-size: 38px;
+    font-size: 46px;
+    color: white;
 }
 
 .form-control {
@@ -524,6 +525,84 @@ ul {
     align-items: center;
 }
 
+.about_current_page_search .is-valid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.about_current_page_search .is-valid input[type=text] {
+    margin-top: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+.edit_card {
+    width: 850px;
+}
+
+.request_form_custom {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.request_form_custom select {
+    width: 800px;
+    height: 60px;
+    font-size: 32px;
+    text-align: center;
+}
+
+.request_form_div form {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 800px;
+}
+
+.request_form_div form div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.request_form_div form div textarea {
+    height: 240px;
+    width: 800px;
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+}
+
+.request_form_div form input[type=submit] {
+    margin-top: 50px;
+    width: 300px;
+    height: 75px;
+    font-size: 34px;
+}
+
+.request_header {
+    color: white;
+    font-size: 58px;
+    margin-block-end: 0.5em;
+}
+
+.request_back_p {
+    text-align: center;
+}
+
+.request_back_link {
+    text-decoration: none;
+    color: aliceblue;
+    font-size: 48px;
+}
+
+.request_back_link:hover {
+    text-decoration: underline;
+}
 
 .event_div::-webkit-scrollbar-track {
     background-color: transparent;
@@ -1191,18 +1270,18 @@ form > p {
     margin-top: 70px;
     margin-bottom: 10px;
     font-size: 40px;
-    border: 1px solid #ccc;
     padding: 10px;
-    background-color: #f9f9f9;
     text-align: center;
     width: 50%;
     margin-left: auto;
     margin-right: auto;
+    color: white;
 }
 
 .new-resident-box a {
-    color: #007bff;
+    color: white;
     text-decoration: none;
+    font-weight: bold;
 }
 
 .new-resident-box a:hover {
@@ -1225,7 +1304,6 @@ form > p {
 
 
 .custom-container {
-    padding-top: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1233,10 +1311,19 @@ form > p {
 
 
 .custom-card {
+    height: 1580px;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #fff;
+}
+
+.custom-form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
 }
 
 
@@ -1249,19 +1336,20 @@ form > p {
 
 .custom-form input[type="text"],
 .custom-form textarea {
-    width: 400px;
-    height: 50px;
-    /*padding: 10px;*/
-    border: 1px solid #ccc;
+    width: 750px;
+    height: 100px;
+    border: 2px solid #ccc;
     border-radius: 5px;
     outline: none;
     text-align: center;
-    font-size: 17px;
+    font-size: 34px;
 }
 
 .custom-form select {
-    width: 200px;
-    height: 30px;
+    width: 400px;
+    height: 60px;
+    font-size: 34px;
+    text-align: center;
 }
 
 .custom-form div {
@@ -1272,12 +1360,103 @@ form > p {
 }
 
 
-.profile_card_button_wrapper log .but{
+.profile_card_button_wrapper log .but {
     display: flex;
     justify-content: center;
 }
 
-.col-7 card .custom-card{
+.col-7 card .custom-card {
     width: 300px;
     height: 800px;
+}
+
+.requests_list_form {
+    height: 1200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.requests_list_header {
+    font-size: 48px;
+    color: white;
+}
+
+.requests_list_select {
+    width: 800px;
+    height: 48px;
+    font-size: 34px;
+}
+
+.requests_list_select > option {
+    font-size: 14px;
+}
+
+.requests_list_confirm {
+    width: 240px;
+    height: 50px;
+    font-size: 34px;
+}
+
+.vote_create_form {
+    height: 1200px;
+    padding-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.vote_create_form input[type=text] {
+    height: 44px;
+    width: 800px;
+    font-size: 34px;
+}
+
+.vote_create_form label {
+    color: white;
+    font-size: 54px;
+}
+
+.vote_create_form textarea {
+    width: 600px;
+    height: 300px;
+    font-size: 34px;
+    text-align: center;
+}
+
+.vote_create_form button {
+    width: 240px;
+    height: 50px;
+    font-size: 34px;
+}
+
+.vote_create_form select {
+    width: 800px;
+    height: 48px;
+    font-size: 34px;
+}
+
+.vote_create_form select > option {
+    font-size: 18px;
+}
+
+.add_vote_option_button {
+    width: 480px !important;
+    height: 82px !important;
+    font-size: 36px !important;
+}
+
+.finish_adding_vote_option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.finish_adding_vote_option_button {
+    width: 200px;
+    height: 50px;
+    font-size: 34px;
 }
