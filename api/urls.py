@@ -14,8 +14,10 @@ from api.views.users_who_voted_api_view import UsersWhoVotedSimpleView, UsersWho
 from api.views.vote_api_view import VoteApiView, VoteSimpleView
 from api.views.voting_options import VotingOptionsSimpleView, VotingOptionsApiView
 from api.views.voting_types_api_view import VotingTypesSimpleView, VotingTypesApiView
-from api.views.admin_request import ChatRequestApiView, SubscriptionLevelRequestApiView, SubscriptionLevelApiView, \
-    SubscriptionLevelDetailApiView, RequestApiView, AdminRequestListApiView, AdminRequestDetailApiView
+from api.views.admin_request_api_view import ChatRequestApiView, SubscriptionLevelRequestApiView, \
+    SubscriptionLevelApiView, SubscriptionLevelDetailApiView, RequestApiView, AdminRequestListApiView, \
+    AdminRequestDetailApiView
+from api.views.role_api_view import RoleApiView, PrivilegesApiView, RoleDetailApiView
 
 urlpatterns = [
     path('events/', EventsSimpleView.as_view(), name="events_list"),
@@ -41,14 +43,17 @@ urlpatterns = [
     path("newsline/", NewslineApiView.as_view(), name="newsline_api"),
     path("accounts/", AccountsSimpleView.as_view(), name="accounts_list"),
     path('accounts/<int:pk>', AccountApiView.as_view(), name="accounts"),
-    path('chat_request/', ChatRequestApiView.as_view(), name="chat_request"),
-    path('sub_request/', SubscriptionLevelRequestApiView.as_view(), name="sub_request"),
-    path('sub_level/', SubscriptionLevelApiView.as_view(), name="sub_level"),
-    path('sub_level/<int:pk>', SubscriptionLevelDetailApiView.as_view(), name="sub_level_detail"),
-    path('request/', RequestApiView.as_view(), name="request"),
-    path('request_all/', AdminRequestListApiView.as_view(), name="request_all"),
-    path('request/<int:pk>', AdminRequestDetailApiView.as_view(), name="request_detail"),
+    path('chat_request/', ChatRequestApiView.as_view(), name="chat_request_api"),
+    path('sub_request/', SubscriptionLevelRequestApiView.as_view(), name="sub_request_api"),
+    path('sub_level/', SubscriptionLevelApiView.as_view(), name="sub_level_api"),
+    path('sub_level/<int:pk>', SubscriptionLevelDetailApiView.as_view(), name="sub_level_detail_api"),
+    path('request/', RequestApiView.as_view(), name="request_api"),
+    path('request_all/', AdminRequestListApiView.as_view(), name="request_all_api"),
+    path('request/<int:pk>', AdminRequestDetailApiView.as_view(), name="request_detail_api"),
     path('user_like/<int:pk>', UserLikeView.as_view(), name='user_like'),
     path('check_auth/', CheckAuthView.as_view(), name='check_auth'),
     path('evets_booked/', EventsBookedSimpleView.as_view(), name='evets_booked'),
+    path('role/', RoleApiView.as_view(), name="role_api"),
+    path('privileges/', PrivilegesApiView.as_view(), name="privileges_api"),
+    path('role/<int:pk>', RoleDetailApiView.as_view(), name="role_detail_api"),
 ]

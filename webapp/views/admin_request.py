@@ -18,6 +18,18 @@ class AdminRequestListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         requests = AdminRequest.objects.filter(is_deleted=False).order_by("-created_at")
+        if self.request.user.role and 'ALLOW_REQUEST_FROM_ALL_RESIDENT_READ' in self.request.user.role.privileges:
+            if self.request.GET.get("from_user"):
+                if self.request.GET.get("from_user") == "me":
+                    requests = requests.filter(user_sender=self.request.user)
+                else:
+                    try:
+                        user_id = int(self.request.GET.get("from_user"))
+                        requests = requests.filter(user_sender=Account.objects.get(id=user_id))
+                    except:
+                        requests = requests
+        else:
+            requests = requests.filter(user_sender=self.request.user)
         if self.request.GET.get("approved"):
             if self.request.GET.get("approved") == "true":
                 requests = requests.filter(approved=True)
@@ -25,15 +37,6 @@ class AdminRequestListView(LoginRequiredMixin, ListView):
                 requests = requests.filter(approved=False)
             elif self.request.GET.get("approved") == "none":
                 requests = requests.filter(approved=None)
-        if self.request.GET.get("from_user"):
-            if self.request.GET.get("from_user") == "me":
-                requests = requests.filter(user_sender=self.request.user)
-            else:
-                try:
-                    user_id = int(self.request.GET.get("from_user"))
-                    requests = requests.filter(user_sender=Account.objects.get(id=user_id))
-                except:
-                    requests = requests
         if self.request.GET.get("filter") and self.request.GET.get("filter") in ['sub_level', 'chat_request',
                                                                                  'other_request']:
             if self.request.GET.get("filter") == 'other_request':
@@ -48,7 +51,10 @@ class AdminRequestListView(LoginRequiredMixin, ListView):
 class AdminRequestDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = AdminRequest
     template_name = 'request_detail.html'
-    context_object_name = 'request'
+    context_object_name = 'request_detail'
+
+    def test_func(self):
+        return self.request.user.role and 'ALLOW_REQUEST_FROM_ALL_RESIDENT_READ' in self.request.user.role.privileges or get_object_or_404(AdminRequest, pk=self.kwargs['pk']).user_sender == self.request.user
 
 
 class AdminRequestCreateView(CreateView):
@@ -149,7 +155,7 @@ class AdminRequestUpdateView(UpdateView):
                 'form_text': AdminRequestSenderTextForm(request_data.__dict__),
                 'type_form': 'def_request'
             }
-        context['request'] = request_data
+        context['request_detail'] = request_data
         return context
 
     def post(self, request, *args, **kwargs):
@@ -214,7 +220,7 @@ class AdminRequestUpdateView(UpdateView):
 class AdminRequestDeleteView(DeleteView):
     template_name = 'request_delete.html'
     model = AdminRequest
-    context_object_name = 'request'
+    context_object_name = 'request_detail'
     success_url = reverse_lazy('request_list')
 
 
@@ -224,7 +230,7 @@ class AdminResponseView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = {
-            'request': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
+            'request_detail': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
             'form': AdminRequestReviewerForm
         }
         return context
@@ -247,12 +253,12 @@ class AdminResponseView(UpdateView):
                 request_response.save()
                 return redirect(reverse('request_detail', kwargs={'pk': request_response.pk}))
             context = {
-                'request': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
+                'request_detail': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
                 'form': form
             }
             return self.render_to_response(context=context)
         context = {
-            'request': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
+            'request_detail': get_object_or_404(AdminRequest, pk=self.kwargs['pk']),
             'form': AdminRequestReviewerForm
         }
         return self.render_to_response(context=context)
