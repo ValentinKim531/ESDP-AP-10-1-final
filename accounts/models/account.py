@@ -106,7 +106,7 @@ class Account(AbstractUser):
     role = models.ForeignKey(
         to='accounts.Role',
         related_name='role_for_account',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         verbose_name="Роль",
         null=True,
         blank=True

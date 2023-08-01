@@ -25,8 +25,6 @@
                     <option selected value="all">Все</option>
                 </select></p>
             </div>
-            {% for privilege_str in request.user.role.privileges %}
-            {% if privilege_str == 'ALLOW_REQUEST_FROM_ALL_RESIDENT_READ' %}
             <div class="own_requests">
                 <p class="requests_list_header">Свои запросы</p>
                 <p><select size="1" name="from_user" class="requests_list_select">
@@ -34,8 +32,6 @@
                     <option selected value="all">Нет</option>
                 </select></p>
             </div>
-            {% endif %}
-            {% endfor %}
             <p><input type="submit" value="Отправить" class="requests_list_confirm"></p>
         </form>
         {% for request in requests %}
