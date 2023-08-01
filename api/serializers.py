@@ -96,10 +96,9 @@ class FamilyStatusSerializer(serializers.ModelSerializer):
 
 
 class RoleSerializer(serializers.ModelSerializer):
-    privileges = serializers.MultipleChoiceField(choices=Role.PRIVILEGES_CHOICES)
     class Meta:
         model = Role
-        fields = ("id", "name", "privileges")
+        fields = ("id", "name")
         read_only = ("id",)
 
 
