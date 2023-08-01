@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Role Create{% endblock %}
+{% block content %}
+<div class="container cont" style="padding-top: 100px;">
+    <div class="row d-flex justify-content-center">
+        <div class="col-7 card text-bg-light form-margins">
+            <h2>Создание роли</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% include 'partial/role_form.html' with button='Создать' %}
+                <input type="reset" value="Очистить форму"/>
+            </form>
+        </div>
+    </div>
+</div>
+<p><a href="{% url 'role_list' %}">Вернуться на страницу ролей</a></p>
+{% endblock %}

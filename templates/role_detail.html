@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Role Detail{% endblock %}
+{% block content %}
+<div class="scrollable-container">
+    <div class="about_current_page">
+        <h1 class="role_header">Роль {{ role.name }}</h1>
+    </div>
+    <div class="privilege_list_block">
+        {% for privilege in role.privileges %}
+        <div class="role_privilege_card">
+            {% for privilege_choice in privileges_list %}
+            {% if privilege == privilege_choice.0 %}
+            {{ privilege_choice.1 }}
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% empty %}
+        <div class="user_card">
+            <div class="no_profiles">
+                <h5 class="no_profiles_text">Нет привилегий</h5>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="about_current_page">
+        <h1 class="newsline_header">Пользователи имеющие эту роль</h1>
+    </div>
+    <div class="block_profiles">
+        {% for account in accounts %}
+        <div class="user_card">
+            <a href="{% url 'account_detail' account.pk %}" class="user_card_link">
+                <div class="about_user">
+                    <div class="about_user_name">
+                        <h4 class="about_user_name_heading">{{ account.first_name }} {{ account.last_name }}</h4>
+                    </div>
+                </div>
+                <div class="user_pic_div">
+                    {% if not account.avatar %}
+                    <img src="{% static 'svg/user.png' %}" alt="Avatar" class="user_pic">
+                    {% else %}
+                    <img src="{{ account.avatar.image.url }}" alt="" class="user_pic">
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="user_card">
+            <div class="no_profiles">
+                <h5 class="no_profiles_text">Нет польхзователей имеющие эту роль</h5>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<p><a href="{% url 'role_list' %}">Вернуться на страницу ролей</a></p>
+<p><a href="{% url 'role_create' %}">Создать роль</a></p>
+<p><a href="{% url 'role_update' role.pk %}">Обновить данные роли</a></p>
+<p><a href="{% url 'role_delete' role.pk %}">Удалить роль</a></p>
+{% endblock %}

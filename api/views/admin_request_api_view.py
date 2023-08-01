@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404
 from accounts.models import Account
 from api.serializers import SubscriptionLevelSerializer, ChatRequestSerializer, AdminRequestSerializer
 from webapp.models import SubscriptionLevel, ChatRequest, AdminRequest, Cities
-from django.db.models import Q
 
 
 class ChatRequestApiView(APIView):
@@ -140,7 +139,7 @@ class SubscriptionLevelDetailApiView(APIView):
             objects.delete()
         except ObjectDoesNotExist:
             Response({"error": "введите существующий pk"})
-        return Response({f"delte - {kwargs.get('pk')}": "мягкое удаление успешно выполнелось"})
+        return Response({f"delete - {kwargs.get('pk')}": "мягкое удаление успешно выполнелось"})
 
 
 class RequestApiView(APIView):
@@ -229,4 +228,4 @@ class AdminRequestDetailApiView(APIView):
             objects.delete()
         except ObjectDoesNotExist:
             Response({"error": "введите существующий pk"})
-        return Response({f"delte - {kwargs.get('pk')}": "мягкое удаление успешно выполнелось"})
+        return Response({f"delete - {kwargs.get('pk')}": "мягкое удаление успешно выполнелось"})

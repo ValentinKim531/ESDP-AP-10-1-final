@@ -7,7 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 import json
-from accounts.models import Account
+from accounts.models import Account, Role
 from accounts.cookie_auth import CookieJWTAuthentication
 from webapp.forms import SearchForm
 
@@ -64,6 +64,11 @@ class ProfileDetailView(DetailView):
     model = Account
     template_name = 'profile_detail.html'
     context_object_name = 'account'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['role_list'] = Role.objects.all()
+        return context
 
 
 def json_accounts(request, *args, **kwargs):
