@@ -1,9 +1,9 @@
 from django.urls import reverse
 from django.utils import timezone
-from .models import Events, TypeEvents, News, Cities
-from django.test import TestCase
+from .models import Events, TypeEvents, News, Cities, ChatRequest, AdminRequest
+from django.test import RequestFactory, TestCase
 from django.contrib.auth import get_user_model
-from accounts.models import Account
+from accounts.models import Account, Role
 
 
 class EventDetailViewTest(TestCase):
@@ -153,7 +153,6 @@ class NewsDeleteTest(TestCase):
         url = reverse('news_confirm_delete', kwargs={'pk': self.news.pk})
         response = self.client.get(url)
 
-
         self.assertEqual(response.status_code, 200)
         self.news.refresh_from_db()
 
@@ -167,3 +166,191 @@ class NewsDeleteTest(TestCase):
         null_response = self.client.get(url)
         self.assertEqual(null_response.status_code, 404)
 
+
+class AdminRequestDetailViewTest(TestCase):
+    def setUp(self):
+        role_test = Role.objects.create(
+            name='test role',
+            privileges=['ALLOW_REQUEST_FROM_ALL_RESIDENT_READ']
+        )
+        self.user = Account.objects.create_user(
+            username='test_user_request',
+            email='test_user_request@example.com',
+            password='12345',
+            role=role_test
+        )
+        cities_test = Cities.objects.create(citi_name="Test City")
+        user_sender = Account.objects.create_user(
+            username='test_user_sender',
+            email='test_user_sender@example.com',
+            password='12345'
+        )
+        second_user_chat = Account.objects.create_user(
+            username='test_second_user_chat',
+            email='test_second_user_chat@example.com',
+            password='12345'
+        )
+        user_reviewer = Account.objects.create_user(
+            username='test_user_reviewer',
+            email='test_user_reviewer@example.com',
+            password='12345'
+        )
+        chat_request = ChatRequest.objects.create(
+            chat_name='Test chat name',
+            cities=cities_test,
+            second_user=second_user_chat,
+            description='Test chat description',
+            rules='Test chat rules'
+        )
+        self.reqeust_test = AdminRequest.objects.create(
+            user_reviewer=user_reviewer,
+            user_sender=user_sender,
+            approved=True,
+            closed_at=timezone.now(),
+            request_text='Test request text',
+            response_text='Test response text',
+            chat_request=chat_request
+        )
+
+    def test_get_context_data(self):
+        self.client.force_login(self.user)
+        url = reverse('request_detail', kwargs={'pk': self.reqeust_test.id})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['request_detail'], self.reqeust_test)
+
+    def test_template_used(self):
+        self.client.force_login(self.user)
+        url = reverse('request_detail', kwargs={'pk': self.reqeust_test.pk})
+        response = self.client.get(url)
+
+        self.assertTemplateUsed(response, 'request_detail.html')
+
+
+class AdminRequestUpdateViewTest(TestCase):
+    def setUp(self):
+        role_test = Role.objects.create(
+            name='test role',
+            privileges=['ALLOW_REQUEST_UPDATE']
+        )
+        self.user = Account.objects.create_user(
+            username='test_user_request',
+            email='test_user_request@example.com',
+            password='12345',
+            role=role_test
+        )
+        cities_test = Cities.objects.create(citi_name="Test City")
+        user_sender = Account.objects.create_user(
+            username='test_user_sender',
+            email='test_user_sender@example.com',
+            password='12345'
+        )
+        second_user_chat = Account.objects.create_user(
+            username='test_second_user_chat',
+            email='test_second_user_chat@example.com',
+            password='12345'
+        )
+        user_reviewer = Account.objects.create_user(
+            username='test_user_reviewer',
+            email='test_user_reviewer@example.com',
+            password='12345'
+        )
+        chat_request = ChatRequest.objects.create(
+            chat_name='Test chat name',
+            cities=cities_test,
+            second_user=second_user_chat,
+            description='Test chat description',
+            rules='Test chat rules'
+        )
+        self.reqeust_test = AdminRequest.objects.create(
+            user_reviewer=user_reviewer,
+            user_sender=user_sender,
+            closed_at=timezone.now(),
+            approved=True,
+            request_text='Test request text',
+            response_text='Test response text',
+            chat_request=chat_request
+        )
+
+    def test_update_request(self):
+        self.client.force_login(self.user)
+        url = reverse('request_update', kwargs={'pk': self.reqeust_test.pk})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.reqeust_test.refresh_from_db()
+
+        self.assertEqual(response.context['request_detail'].pk, self.reqeust_test.pk)
+        self.assertEqual(self.reqeust_test.request_text, 'Test request text')
+        self.assertEqual(self.reqeust_test.response_text, 'Test response text')
+        self.assertTemplateUsed(response, 'request_update.html')
+        self.assertTrue('request_detail' in response.context)
+
+        url = reverse('request_update', kwargs={'pk': self.reqeust_test.pk + 1})
+        null_response = self.client.get(url)
+        self.assertEqual(null_response.status_code, 404)
+
+
+class AdminRequestDeleteViewTest(TestCase):
+    def setUp(self):
+        role_test = Role.objects.create(
+            name='test role',
+            privileges=['ALLOW_REQUEST_DELETE']
+        )
+        self.user = Account.objects.create_user(
+            username='test_user_request',
+            email='test_user_request@example.com',
+            password='12345',
+            role=role_test
+        )
+        cities_test = Cities.objects.create(citi_name="Test City")
+        user_sender = Account.objects.create_user(
+            username='test_user_sender',
+            email='test_user_sender@example.com',
+            password='12345'
+        )
+        second_user_chat = Account.objects.create_user(
+            username='test_second_user_chat',
+            email='test_second_user_chat@example.com',
+            password='12345'
+        )
+        user_reviewer = Account.objects.create_user(
+            username='test_user_reviewer',
+            email='test_user_reviewer@example.com',
+            password='12345'
+        )
+        chat_request = ChatRequest.objects.create(
+            chat_name='Test chat name',
+            cities=cities_test,
+            second_user=second_user_chat,
+            description='Test chat description',
+            rules='Test chat rules'
+        )
+        self.reqeust_test = AdminRequest.objects.create(
+            user_reviewer=user_reviewer,
+            user_sender=user_sender,
+            approved=True,
+            closed_at=timezone.now(),
+            request_text='Test request text',
+            response_text='Test response text',
+            chat_request=chat_request
+        )
+
+    def test_delete_request(self):
+        self.client.force_login(self.user)
+        url = reverse('request_delete', kwargs={'pk': self.reqeust_test.pk})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.reqeust_test.refresh_from_db()
+
+        self.assertEqual(response.context['request_detail'].pk, self.reqeust_test.pk)
+        self.assertEqual(response.context['request_detail'].request_text, 'Test request text')
+        self.assertTrue('request_detail' in response.context)
+        self.assertContains(response, self.reqeust_test.response_text)
+        self.assertTemplateUsed(response, 'request_delete.html')
+
+        url = reverse('request_delete', kwargs={'pk': self.reqeust_test.pk + 1})
+        null_response = self.client.get(url)
+        self.assertEqual(null_response.status_code, 404)
