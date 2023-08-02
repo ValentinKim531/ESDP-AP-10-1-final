@@ -14,7 +14,7 @@
         </div>
     </div>
 </div>
-<a href="{% url 'request_detail' request.pk %}">Вернусься на страницу запроса</a>
+<a href="{% url 'request_detail' request_detail.pk %}">Вернусься на страницу запроса</a>
 <p><a href="{% url 'request_list' %}">Вернусься на страницу запросов админу</a></p>
 {% endblock %}
 {% block script_block %}
