@@ -91,7 +91,7 @@ class EventsUpdateTest(TestCase):
         self.assertEqual(self.events.number_of_seats, 50)
         self.assertEqual(self.events.description, 'Test event description')
         self.assertEqual(self.events.price, 10)
-        self.assertEqual(response.context['events'].pk, 3)
+        self.assertEqual(response.context['events'].pk, self.events.pk)
         self.assertTrue('events' in response.context)
         self.assertTemplateUsed(response, 'events_update.html')
 
@@ -119,7 +119,7 @@ class NewsUpdateTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.news.refresh_from_db()
 
-        self.assertEqual(response.context['news'].pk, 2)
+        self.assertEqual(response.context['news'].pk, self.news.pk)
         self.assertEqual(self.news.name, 'Test News')
         self.assertEqual(self.news.description, 'Test news description')
         self.assertTemplateUsed(response, 'news_update.html')
@@ -156,7 +156,7 @@ class NewsDeleteTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.news.refresh_from_db()
 
-        self.assertEqual(response.context['news'].pk, 1)
+        self.assertEqual(response.context['news'].pk, self.news.pk)
         self.assertEqual(response.context['news'].name, 'Test News')
         self.assertTrue('news' in response.context)
         self.assertContains(response, self.news.name)
