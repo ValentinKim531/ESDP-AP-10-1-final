@@ -1,14 +1,15 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import get_object_or_404, GenericAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework.utils import json
 from accounts.models import Review, Account
 from api.serializers import ReviewsSerializer
 
 
-class ReviewsSimpleView(APIView):
+class ReviewsSimpleView(GenericAPIView):
+
+    serializer_class = ReviewsSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -32,8 +33,9 @@ class ReviewsSimpleView(APIView):
             return response
 
 
+class ReviewApiView(GenericAPIView):
 
-class ReviewApiView(APIView):
+    serializer_class = ReviewsSerializer
 
     def get(self, request, *args, **kwargs):
         try:

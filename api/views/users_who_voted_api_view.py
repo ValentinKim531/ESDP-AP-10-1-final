@@ -5,13 +5,15 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-
+from rest_framework.generics import GenericAPIView
 from accounts.models import Account
 from api.serializers import UsersWhoVotedSerializer
 from webapp.models import UsersWhoVoted, VotingOptions
 
 
-class UsersWhoVotedSimpleView(APIView):
+class UsersWhoVotedSimpleView(GenericAPIView):
+
+    serializer_class = UsersWhoVotedSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -35,7 +37,9 @@ class UsersWhoVotedSimpleView(APIView):
             return response
 
 
-class UsersWhoVotedApiView(APIView):
+class UsersWhoVotedApiView(GenericAPIView):
+
+    serializer_class = UsersWhoVotedSerializer
 
     def get(self, request, *args, **kwargs):
         try:

@@ -1,5 +1,5 @@
 import json
-
+from rest_framework.generics import GenericAPIView
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
@@ -9,7 +9,9 @@ from api.serializers import VotingOptionsSerializer
 from webapp.models import VotingOptions, Vote
 
 
-class VotingOptionsSimpleView(APIView):
+class VotingOptionsSimpleView(GenericAPIView):
+
+    serializer_class = VotingOptionsSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -32,7 +34,9 @@ class VotingOptionsSimpleView(APIView):
             return response
 
 
-class VotingOptionsApiView(APIView):
+class VotingOptionsApiView(GenericAPIView):
+
+    serializer_class = VotingOptionsSerializer
 
     def get(self, request, *args, **kwargs):
         try:

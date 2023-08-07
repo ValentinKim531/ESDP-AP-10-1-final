@@ -7,11 +7,17 @@ django-cors-headers==4.1.0
 django_debug_toolbar==3.8.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
+drf-yasg==1.21.7
+inflection==0.5.1
+packaging==23.1
 Pillow==9.5.0
 psycopg2-binary==2.9.6
 PyJWT==2.7.0
 python-decouple==3.8
 pytz==2023.3
+PyYAML==6.0.1
 soupsieve==2.4.1
 sqlparse==0.4.4
 typing_extensions==4.6.3
+uritemplate==4.1.1
+django-filter==23.2

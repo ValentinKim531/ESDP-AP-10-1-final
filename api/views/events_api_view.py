@@ -3,14 +3,16 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.utils import json
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from accounts.models import Account
 from api.serializers import EventsSerializer, UserBookedSerializer
 from webapp.models import Events, Cities, TypeEvents, Image, UserBooked
 
 
-class EventsSimpleView(APIView):
+class EventsSimpleView(GenericAPIView):
+
+    serializer_class = EventsSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -36,7 +38,9 @@ class EventsSimpleView(APIView):
             return response
 
 
-class EventApiView(APIView):
+class EventApiView(GenericAPIView):
+
+    serializer_class = EventsSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -67,7 +71,9 @@ class EventApiView(APIView):
         return Response({f"delte - {kwargs.get('pk')}": "мягкое удаление успешно выполнелось"})
 
 
-class EventsBookedSimpleView(APIView):
+class EventsBookedSimpleView(GenericAPIView):
+
+    serializer_class = UserBookedSerializer
 
     def get(self, request, *args, **kwargs):
         try:

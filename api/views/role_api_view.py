@@ -1,5 +1,6 @@
 import json
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.generics import GenericAPIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -19,7 +20,11 @@ class PrivilegesApiView(APIView):
         else:
             return Response(privileges_list, status=status.HTTP_200_OK)
 
-class RoleApiView(APIView):
+
+class RoleApiView(GenericAPIView):
+
+    serializer_class = RoleSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             role_list = Role.objects.all()
@@ -44,7 +49,10 @@ class RoleApiView(APIView):
             return response
 
 
-class RoleDetailApiView(APIView):
+class RoleDetailApiView(GenericAPIView):
+
+    serializer_class = RoleSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             sub_level_detail = get_object_or_404(Role, pk=kwargs.get("pk"))

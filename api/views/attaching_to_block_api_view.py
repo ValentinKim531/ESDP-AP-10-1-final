@@ -3,7 +3,7 @@ import json
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from django.shortcuts import get_object_or_404
 
 from accounts.models import Account
@@ -11,7 +11,9 @@ from api.serializers import AttachingToBlockSerializer
 from webapp.models import ListVotes, Events, News, AttachingToBlock
 
 
-class AttachingToBlockSimpleView(APIView):
+class AttachingToBlockSimpleView(GenericAPIView):
+
+    serializer_class = AttachingToBlockSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -37,7 +39,9 @@ class AttachingToBlockSimpleView(APIView):
             return response
 
 
-class AttachingToBlockApiView(APIView):
+class AttachingToBlockApiView(GenericAPIView):
+
+    serializer_class = AttachingToBlockSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -65,4 +69,4 @@ class AttachingToBlockApiView(APIView):
             objects.delete()
         except ObjectDoesNotExist:
             Response({"error": "введите существующий pk"})
-        return Response({f"delte - {kwargs.get('pk')}": "мягкое удаление успешно выполнелось"})
+        return Response({f"delte - {kwargs.get('pk')}": "мягкое удаление успешно выполнено"})

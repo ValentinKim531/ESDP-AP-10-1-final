@@ -2,14 +2,17 @@ import json
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from django.shortcuts import get_object_or_404
 from accounts.models import Account
 from api.serializers import SubscriptionLevelSerializer, ChatRequestSerializer, AdminRequestSerializer
 from webapp.models import SubscriptionLevel, ChatRequest, AdminRequest, Cities
 
 
-class ChatRequestApiView(APIView):
+class ChatRequestApiView(GenericAPIView):
+
+    serializer_class = AdminRequestSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             chat_request_list = AdminRequest.objects.filter(chat_request__isnull=False)
@@ -58,7 +61,10 @@ class ChatRequestApiView(APIView):
             return response
 
 
-class SubscriptionLevelRequestApiView(APIView):
+class SubscriptionLevelRequestApiView(GenericAPIView):
+
+    serializer_class = AdminRequestSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             sub_request_list = AdminRequest.objects.filter(sub_level__isnull=False)
@@ -83,7 +89,10 @@ class SubscriptionLevelRequestApiView(APIView):
             return response
 
 
-class SubscriptionLevelApiView(APIView):
+class SubscriptionLevelApiView(GenericAPIView):
+
+    serializer_class = SubscriptionLevelSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             level_list = SubscriptionLevel.objects.filter(is_deleted=False)
@@ -108,7 +117,10 @@ class SubscriptionLevelApiView(APIView):
             return response
 
 
-class SubscriptionLevelDetailApiView(APIView):
+class SubscriptionLevelDetailApiView(GenericAPIView):
+
+    serializer_class = SubscriptionLevelSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             sub_level_detail = get_object_or_404(SubscriptionLevel, pk=kwargs.get("pk"))
@@ -142,7 +154,10 @@ class SubscriptionLevelDetailApiView(APIView):
         return Response({f"delete - {kwargs.get('pk')}": "мягкое удаление успешно выполнелось"})
 
 
-class RequestApiView(APIView):
+class RequestApiView(GenericAPIView):
+
+    serializer_class = AdminRequestSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             request_list = AdminRequest.objects.filter(sub_level__isnull=True, chat_request__isnull=True)
@@ -166,7 +181,10 @@ class RequestApiView(APIView):
             return response
 
 
-class AdminRequestListApiView(APIView):
+class AdminRequestListApiView(GenericAPIView):
+
+    serializer_class = AdminRequestSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             request_list = AdminRequest.objects.all()
@@ -179,7 +197,10 @@ class AdminRequestListApiView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class AdminRequestDetailApiView(APIView):
+class AdminRequestDetailApiView(GenericAPIView):
+
+    serializer_class = AdminRequestSerializer
+
     def get(self, request, *args, **kwargs):
         try:
             request_detail = get_object_or_404(AdminRequest, pk=kwargs.get("pk"))

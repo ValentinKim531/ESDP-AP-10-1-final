@@ -1,15 +1,16 @@
 import json
-
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from django.shortcuts import get_object_or_404
 from api.serializers import NameVotingTypesSerializer
 from webapp.models import NameVotingTypes
 
 
-class NameVotingTypesSSimpleView(APIView):
+class NameVotingTypesSSimpleView(GenericAPIView):
+
+    serializer_class = NameVotingTypesSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -31,7 +32,9 @@ class NameVotingTypesSSimpleView(APIView):
             return response
 
 
-class NameVotingTypesSApiView(APIView):
+class NameVotingTypesSApiView(GenericAPIView):
+
+    serializer_class = NameVotingTypesSerializer
 
     def get(self, request, *args, **kwargs):
         try:
