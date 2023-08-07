@@ -3,14 +3,16 @@ import json
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from django.shortcuts import get_object_or_404
 from accounts.models import Account
 from api.serializers import NewsSerializer
 from webapp.models import News, Cities, Image
 
 
-class NewsSimpleView(APIView):
+class NewsSimpleView(GenericAPIView):
+
+    serializer_class = NewsSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -39,7 +41,9 @@ class NewsSimpleView(APIView):
             return response
 
 
-class NewsApiView(APIView):
+class NewsApiView(GenericAPIView):
+
+    serializer_class = NewsSerializer
 
     def get(self, request, *args, **kwargs):
         try:

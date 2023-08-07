@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-lss*=@=5ojk2@wy_!gwto+fl_-_gxgd=zupkn0a$8c2%z2(sbd
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'app', '138.68.78.122']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:9000', 'http://127.0.0.1:9000', 'http://138.68.78.122:9000']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:9000', 'http://127.0.0.1:9000', 'http://138.68.78.122:9000', 'http://138.68.78.122:8000']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -35,6 +35,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:9000",
+    "http://127.0.0.1:8000",
     "http://138.68.78.122:9000"
 ]
 
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # 'rest_framework.authtoken',
     'api',
+    'drf_yasg',
     'rest_framework_simplejwt',
     'calendar'
 ]

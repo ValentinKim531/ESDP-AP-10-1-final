@@ -1,13 +1,16 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from api.serializers import EventsSerializer, NewsSerializer
 from webapp.models import Events, News
 from rest_framework.permissions import IsAuthenticated
 
-class NewslineApiView(APIView):
+
+class NewslineApiView(GenericAPIView):
+
     permission_classes = (IsAuthenticated,)
+    serializer_class = NewsSerializer
 
     def get(self, request, *args, **kwargs):
         events = Events.objects.all().order_by('created_at')

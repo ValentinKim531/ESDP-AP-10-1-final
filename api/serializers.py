@@ -53,10 +53,12 @@ class EventsSerializer(serializers.ModelSerializer):
         )
         read_only = ("id", "created_at", "updated_at", "is_deleted")
 
+class StringSerializer(serializers.ListSerializer):
+    child = ImageSerializer(read_only=True)
 
 class NewsSerializer(serializers.ModelSerializer):
     cities = CitiesSerializer(read_only=True)
-    photo = ImageSerializer(many=True, read_only=True)
+    photo = StringSerializer()
 
     class Meta:
         model = News
@@ -97,6 +99,7 @@ class FamilyStatusSerializer(serializers.ModelSerializer):
 
 class RoleSerializer(serializers.ModelSerializer):
     privileges = serializers.MultipleChoiceField(choices=Role.PRIVILEGES_CHOICES)
+
     class Meta:
         model = Role
         fields = ("id", "name", "privileges")

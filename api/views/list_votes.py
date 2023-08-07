@@ -3,7 +3,7 @@ import json
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 from django.shortcuts import get_object_or_404
 
 from accounts.models import Account
@@ -11,7 +11,9 @@ from api.serializers import ListVotesSerializer
 from webapp.models import ListVotes, Vote
 
 
-class ListVotesSimpleView(APIView):
+class ListVotesSimpleView(GenericAPIView):
+
+    serializer_class = ListVotesSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -39,7 +41,9 @@ class ListVotesSimpleView(APIView):
             return response
 
 
-class ListVotesApiView(APIView):
+class ListVotesApiView(GenericAPIView):
+
+    serializer_class = ListVotesSerializer
 
     def get(self, request, *args, **kwargs):
         try:

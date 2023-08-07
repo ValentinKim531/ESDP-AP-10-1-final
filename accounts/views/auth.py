@@ -4,11 +4,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
+from rest_framework.generics import GenericAPIView
 from accounts.serializers import UserSerializer, LoginSerializer
 
 
-class RegisterUserView(APIView):
+class RegisterUserView(GenericAPIView):
+
+    serializer_class = UserSerializer
+
     def get(self, request):
         return render(request, 'register.html')
 
@@ -26,7 +29,9 @@ class RegisterUserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginUserView(APIView):
+class LoginUserView(GenericAPIView):
+
+    serializer_class = LoginSerializer
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -52,6 +57,7 @@ class LoginUserView(APIView):
 
 
 class LogoutUserView(APIView):
+
     def post(self, request):
         response = Response({"detail": "Logout Successful"}, status=status.HTTP_200_OK)
         response.delete_cookie('jwt')

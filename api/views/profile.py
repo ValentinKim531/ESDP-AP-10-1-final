@@ -1,16 +1,16 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import get_object_or_404, GenericAPIView
 from rest_framework.response import Response
 from rest_framework.utils import json
-from rest_framework.views import APIView
-
 from accounts.models import Account, FamilyStatus, Role
 from api.serializers import AccountSerializer
 from webapp.models import Cities, Image
 
 
-class AccountsSimpleView(APIView):
+class AccountsSimpleView(GenericAPIView):
+
+    serializer_class = AccountSerializer
 
     def get(self, request, *args, **kwargs):
         try:
@@ -36,7 +36,9 @@ class AccountsSimpleView(APIView):
             return response
 
 
-class AccountApiView(APIView):
+class AccountApiView(GenericAPIView):
+
+    serializer_class = AccountSerializer
 
     def get(self, request, *args, **kwargs):
         try:
